@@ -1,0 +1,889 @@
+<!DOCTYPE HTML>
+<html lang="zh-CN">
+
+
+<head><meta name="generator" content="Hexo 3.8.0">
+    <meta charset="utf-8">
+    <meta name="keywords" content="零基础也能看懂的 RxSwift 官方 Example 解析(1) Bindings, 大青虫">
+    <meta name="description" content="概述很多小伙伴在初学 RxSwift 时，在面对大量的操作符和各种抽象的概念时可能都会感到无从下手，但其实官方提供的 Example 就能够很方便的帮助我们学习 RxSwift 的各种概念以及如何与 MVVM 相结合。毕竟直接看实际的运用场">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="renderer" content="webkit|ie-stand|ie-comp">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>零基础也能看懂的 RxSwift 官方 Example 解析(1) Bindings | 大青虫</title>
+    <link rel="icon" type="image/png" href="/favicon.png">
+
+    <link rel="stylesheet" type="text/css" href="/libs/awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" type="text/css" href="/libs/materialize/css/materialize.min.css">
+    <link rel="stylesheet" type="text/css" href="/libs/aos/aos.css">
+    <link rel="stylesheet" type="text/css" href="/libs/animate/animate.min.css">
+    <link rel="stylesheet" type="text/css" href="/libs/lightGallery/css/lightgallery.min.css">
+    <link rel="stylesheet" type="text/css" href="/css/matery.css">
+    <link rel="stylesheet" type="text/css" href="/css/my.css">
+
+    <script src="/libs/jquery/jquery-2.2.0.min.js"></script>
+<link rel="stylesheet" href="/css/prism.css" type="text/css"></head>
+
+
+<body>
+
+<header class="navbar-fixed">
+    <nav id="headNav" class="bg-color nav-transparent">
+        <div id="navContainer" class="container">
+            <div class="nav-wrapper">
+                <div class="brand-logo">
+                    <a href="/" class="waves-effect waves-light">
+                        
+                        <img src="/medias/logo.png" class="logo-img hide-on-small-only">
+                        
+                        <span class="logo-span">大青虫</span>
+                    </a>
+                </div>
+                
+
+<a href="#" data-activates="mobile-nav" class="button-collapse"><i class="fa fa-navicon"></i></a>
+<ul class="right">
+    
+    <li class="hide-on-med-and-down">
+        <a href="/" class="waves-effect waves-light">
+            
+            <i class="fa fa-home"></i>
+            
+            <span>首页</span>
+        </a>
+    </li>
+    
+    <li class="hide-on-med-and-down">
+        <a href="/tags" class="waves-effect waves-light">
+            
+            <i class="fa fa-tags"></i>
+            
+            <span>标签</span>
+        </a>
+    </li>
+    
+    <li class="hide-on-med-and-down">
+        <a href="/categories" class="waves-effect waves-light">
+            
+            <i class="fa fa-bookmark"></i>
+            
+            <span>分类</span>
+        </a>
+    </li>
+    
+    <li class="hide-on-med-and-down">
+        <a href="/archives" class="waves-effect waves-light">
+            
+            <i class="fa fa-archive"></i>
+            
+            <span>归档</span>
+        </a>
+    </li>
+    
+    <li class="hide-on-med-and-down">
+        <a href="/about" class="waves-effect waves-light">
+            
+            <i class="fa fa-user-circle-o"></i>
+            
+            <span>关于</span>
+        </a>
+    </li>
+    
+    <li class="hide-on-med-and-down">
+        <a href="/friends" class="waves-effect waves-light">
+            
+            <i class="fa fa-address-book"></i>
+            
+            <span>友情链接</span>
+        </a>
+    </li>
+    
+    <li>
+        <a id="toggleSearch" class="waves-effect waves-light">
+            <i id="searchIcon" class="mdi-action-search" title="搜索"></i>
+        </a>
+    </li>
+
+</ul>
+
+<div class="side-nav" id="mobile-nav">
+
+    <div class="mobile-head bg-color">
+        
+        <img src="/medias/logo.png" class="logo-img circle responsive-img">
+        
+        <div class="logo-name">大青虫</div>
+        <div class="logo-desc">
+            
+            愿逐月华流照君
+            
+        </div>
+    </div>
+
+    
+
+    <ul class="menu-list mobile-menu-list">
+        
+        <li>
+            <a href="/" class="waves-effect waves-light">
+                
+                <i class="fa fa-fw fa-home"></i>
+                
+                首页
+            </a>
+        </li>
+        
+        <li>
+            <a href="/tags" class="waves-effect waves-light">
+                
+                <i class="fa fa-fw fa-tags"></i>
+                
+                标签
+            </a>
+        </li>
+        
+        <li>
+            <a href="/categories" class="waves-effect waves-light">
+                
+                <i class="fa fa-fw fa-bookmark"></i>
+                
+                分类
+            </a>
+        </li>
+        
+        <li>
+            <a href="/archives" class="waves-effect waves-light">
+                
+                <i class="fa fa-fw fa-archive"></i>
+                
+                归档
+            </a>
+        </li>
+        
+        <li>
+            <a href="/about" class="waves-effect waves-light">
+                
+                <i class="fa fa-fw fa-user-circle-o"></i>
+                
+                关于
+            </a>
+        </li>
+        
+        <li>
+            <a href="/friends" class="waves-effect waves-light">
+                
+                <i class="fa fa-fw fa-address-book"></i>
+                
+                友情链接
+            </a>
+        </li>
+        
+        
+        <li><div class="divider"></div></li>
+        <li>
+            <a href="https://github.com/InsectQY" class="waves-effect waves-light" target="_blank">
+                <i class="fa fa-github-square fa-fw"></i>Fork Me
+            </a>
+        </li>
+        
+    </ul>
+
+    <div class="social-link">
+    <a href="https://github.com/InsectQY" class="tooltipped" target="_blank" data-tooltip="访问我的GitHub" data-position="top" data-delay="50">
+        <i class="fa fa-github"></i>
+    </a>
+
+
+
+    <a href="mailto:704861917@qq.com" class="tooltipped" target="_blank" data-tooltip="邮件联系我" data-position="top" data-delay="50">
+        <i class="fa fa-envelope-open"></i>
+    </a>
+
+
+
+    <a href="tencent://AddContact/?fromId=50&fromSubId=1&subcmd=all&uin=704861917" class="tooltipped" data-tooltip="QQ联系我: 704861917" data-position="top" data-delay="50">
+        <i class="fa fa-qq"></i>
+    </a>
+
+
+</div>
+</div>
+
+            </div>
+        </div>
+
+        
+        <style>
+    .nav-transparent .github-corner {
+        display: none !important;
+    }
+
+    .github-corner {
+        position: absolute;
+        z-index: 10;
+        top: 0;
+        right: 0;
+        border: 0;
+        transform: scale(1.1);
+    }
+
+    .github-corner svg {
+        color: #0f9d58;
+        fill: #fff;
+        height: 64px;
+        width: 64px;
+    }
+
+    .github-corner:hover .octo-arm {
+        animation: a 0.56s ease-in-out;
+    }
+
+    .github-corner .octo-arm {
+        animation: none;
+    }
+
+    @keyframes a {
+        0%,
+        to {
+            transform: rotate(0);
+        }
+        20%,
+        60% {
+            transform: rotate(-25deg);
+        }
+        40%,
+        80% {
+            transform: rotate(10deg);
+        }
+    }
+</style>
+
+<a href="https://github.com/InsectQY" class="github-corner tooltipped hide-on-med-and-down" target="_blank" data-tooltip="Fork Me" data-position="left" data-delay="50">
+    <svg viewbox="0 0 250 250" aria-hidden="true">
+        <path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"/>
+        <path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"/>
+        <path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"/>
+    </svg>
+</a>
+        
+    </nav>
+</header>
+
+
+
+
+
+<div class="bg-cover post-cover" style="background-image: url('/medias/featureimages/16.jpg')">
+    <div class="container">
+        <div class="row">
+            <div class="col s12 m12 l12">
+                <div class="brand">
+                    <div class="description center-align post-title">
+                        零基础也能看懂的 RxSwift 官方 Example 解析(1) Bindings
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<main class="container content">
+
+    
+    <!-- 文章内容详情 -->
+<div id="artDetail">
+    <div class="card">
+        <div class="card-content article-info">
+            <div class="row tag-cate">
+                <div class="col s7">
+                    
+                    <div class="article-tag">
+                        
+                            <a href="/tags/Swift/" target="_blank">
+                                <span class="chip bg-color">Swift</span>
+                            </a>
+                        
+                            <a href="/tags/RxSwift/" target="_blank">
+                                <span class="chip bg-color">RxSwift</span>
+                            </a>
+                        
+                            <a href="/tags/Bindings/" target="_blank">
+                                <span class="chip bg-color">Bindings</span>
+                            </a>
+                        
+                    </div>
+                    
+                </div>
+                <div class="col s5 right-align">
+                    
+                    <div class="post-cate">
+                        <i class="fa fa-bookmark fa-fw icon-category"></i>
+                        
+                            <a href="/categories/iOS/" class="post-category" target="_blank">
+                                iOS
+                            </a>
+                        
+                    </div>
+                    
+                </div>
+            </div>
+
+            <div class="post-info">
+                <div class="post-date info-break-policy">
+                    <i class="fa fa-calendar-minus-o fa-fw"></i>发布日期:&nbsp;&nbsp;
+                    2019-02-13
+                </div>
+
+                
+				
+				
+                    <div id="busuanzi_container_page_pv" class="info-break-policy">
+                        <i class="fa fa-eye fa-fw"></i>阅读次数:&nbsp;&nbsp;
+                        <span id="busuanzi_value_page_pv"></span>
+                    </div>
+				
+            </div>
+        </div>
+        <hr class="clearfix">
+        <div class="card-content article-card-content">
+            <div id="articleContent">
+                <h1 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h1><p>很多小伙伴在初学 <a href="https://github.com/ReactiveX/RxSwift" target="_blank" rel="noopener">RxSwift</a> 时，在面对大量的操作符和各种抽象的概念时可能都会感到无从下手，但其实官方提供的 Example 就能够很方便的帮助我们学习 <a href="https://github.com/ReactiveX/RxSwift" target="_blank" rel="noopener">RxSwift</a> 的各种概念以及如何与 MVVM 相结合。毕竟直接看实际的运用场景比看抽象的概念要容易理解的多。</p>
+<p>我个人认为 <a href="https://github.com/ReactiveX/RxSwift" target="_blank" rel="noopener">RxSwift</a> 的核心其实很简单，就是把要操作的事件、属性都抽象成一个个<code>Observable</code>，剩下的变换、组合、过滤、响应(订阅)、线程调度、生命周期管理都是你对 <code>Observable</code> 的加工和处理。如果你真的理解了什么是 <code>Observable</code>，哪些东西可以被包装成 <code>Observable</code> 那么你已经成功了一半啦，就像你刚学面向对象编程，搞懂了什么是对象，哪些东西可以被抽象成对象以后，后面的学习是不是顺利了很多呢。</p>
+<p>其实初学的时候真的不用在面对大量的操作符时困惑，也不要有怕难的心态，觉得这么多东西我得记到什么时候。可以先看一遍文档有能力的也可以看看源码。用的多了你会发现和我们平常写代码一样，常用的 Api 就那些，其他用的少的真忘记的时候再翻翻文档就好。(中文文档 <a href="https://github.com/beeth0ven/RxSwift-Chinese-Documentation" target="_blank" rel="noopener">RxSwift-Chinese-Documentation</a>)</p>
+<p>好了废话不多说，本篇所有示例代码在 <a href="https://github.com/ReactiveX/RxSwift" target="_blank" rel="noopener">RxSwift</a> 官方项目中就有，下载完了直接运行即可。<img src="https://upload-images.jianshu.io/upload_images/2568859-26d17f069a8bd03c.gif?imageMogr2/auto-orient/strip" alt=""></p>
+<p>可以看到官方为我们分了三块内容，</p>
+<ul>
+<li>iPhone Example</li>
+<li>TableView 和 CollectionView Example</li>
+<li>综合的 Example</li>
+</ul>
+<p>本篇文章我们先从这些 Demo 里最简单的 Bindings 说起。</p>
+<h1 id="Adding-numbers"><a href="#Adding-numbers" class="headerlink" title="Adding numbers"></a>Adding numbers</h1><p>先看运行效果<img src="https://upload-images.jianshu.io/upload_images/2568859-16a4f1bc0c762c44.gif?imageMogr2/auto-orient/strip" alt=""></p>
+<p>有三个 <code>UITextField</code> 任何一个 <code>UITextField</code> 输入内容时，把三者相加，在最底部 <code>UILabel</code> 显示结果。</p>
+<p>这是一个很简单的响应式编程的例子，这个页面主要由四个元素组成</p>
+<pre class=" language-swift"><code class="language-swift"><span class="token atrule">@IBOutlet</span> <span class="token keyword">weak</span> <span class="token keyword">var</span> number1<span class="token punctuation">:</span> <span class="token builtin">UITextField</span><span class="token operator">!</span>
+<span class="token atrule">@IBOutlet</span> <span class="token keyword">weak</span> <span class="token keyword">var</span> number2<span class="token punctuation">:</span> <span class="token builtin">UITextField</span><span class="token operator">!</span>
+<span class="token atrule">@IBOutlet</span> <span class="token keyword">weak</span> <span class="token keyword">var</span> number3<span class="token punctuation">:</span> <span class="token builtin">UITextField</span><span class="token operator">!</span>
+<span class="token atrule">@IBOutlet</span> <span class="token keyword">weak</span> <span class="token keyword">var</span> result<span class="token punctuation">:</span> <span class="token builtin">UILabel</span><span class="token operator">!</span>
+</code></pre>
+<p>先考虑一下以往我们会怎么实现：</p>
+<ol>
+<li>监听三个  <code>UITextField</code>  的文本框改变(<code>Delegate</code>、<code>KVO</code>、<code>NSNotificationCenter</code>、<code>addTarget</code>)。</li>
+<li>在回调方法中将三个 <code>UITextField</code> 输入内容转成 <code>Int</code> 相加并赋值给 <code>UILabel</code>。</li>
+</ol>
+<p>原生实现最大的问题在于，无论哪种方式，监听文本框内容改变的代码都不是那么的优雅。</p>
+<p>看一下用 <a href="https://github.com/ReactiveX/RxSwift" target="_blank" rel="noopener">RxSwift</a> 如何实现。回想我们刚刚所说的核心，把属性或者事件抽象成 <code>Observable</code>，再对 <code>Observable</code> 进行操作。</p>
+<ol>
+<li>包装 (把三个 <code>UITextField</code> 输入的内容抽象成三个 <code>Observable</code>)<pre class=" language-swift"><code class="language-swift">number1<span class="token punctuation">.</span>rx<span class="token punctuation">.</span>text<span class="token punctuation">.</span>orEmpty
+number2<span class="token punctuation">.</span>rx<span class="token punctuation">.</span>text<span class="token punctuation">.</span>orEmpty
+number3<span class="token punctuation">.</span>rx<span class="token punctuation">.</span>text<span class="token punctuation">.</span>orEmpty
+</code></pre>
+</li>
+<li>组合 (把三个 <code>Observable</code> 组合，并将每一个值转成 <code>Int</code> 类型相加)。<pre class=" language-swift"><code class="language-swift"><span class="token builtin">Observable</span><span class="token punctuation">.</span><span class="token function">combineLatest</span><span class="token punctuation">(</span>number1<span class="token punctuation">.</span>rx<span class="token punctuation">.</span>text<span class="token punctuation">.</span>orEmpty<span class="token punctuation">,</span> number2<span class="token punctuation">.</span>rx<span class="token punctuation">.</span>text<span class="token punctuation">.</span>orEmpty<span class="token punctuation">,</span> number3<span class="token punctuation">.</span>rx<span class="token punctuation">.</span>text<span class="token punctuation">.</span>orEmpty<span class="token punctuation">)</span> <span class="token punctuation">{</span> textValue1<span class="token punctuation">,</span> textValue2<span class="token punctuation">,</span> textValue3 <span class="token operator">-</span><span class="token operator">></span> <span class="token builtin">Int</span> <span class="token keyword">in</span>
+ <span class="token keyword">return</span> <span class="token punctuation">(</span><span class="token function">Int</span><span class="token punctuation">(</span>textValue1<span class="token punctuation">)</span> <span class="token operator">?</span><span class="token operator">?</span> <span class="token number">0</span><span class="token punctuation">)</span> <span class="token operator">+</span> <span class="token punctuation">(</span><span class="token function">Int</span><span class="token punctuation">(</span>textValue2<span class="token punctuation">)</span> <span class="token operator">?</span><span class="token operator">?</span> <span class="token number">0</span><span class="token punctuation">)</span> <span class="token operator">+</span> <span class="token punctuation">(</span><span class="token function">Int</span><span class="token punctuation">(</span>textValue3<span class="token punctuation">)</span> <span class="token operator">?</span><span class="token operator">?</span> <span class="token number">0</span><span class="token punctuation">)</span>
+<span class="token punctuation">}</span>
+</code></pre>
+文档中为我们描述的 <code>combineLatest</code> 的作用。<blockquote>
+<p>当多个 Observables 中任何一个发出一个元素，就发出一个元素。这个元素是由这些 Observables 中最新的元素，通过一个函数组合起来的。<br><img src="https://upload-images.jianshu.io/upload_images/2568859-8c64061a2a4119e9.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt=""></p>
+</blockquote>
+</li>
+</ol>
+<p>说的再直白一点就是，这三个  <code>UITextField</code> 任意一个有新值的时候都会被组合成新的<code>Observable</code>。</p>
+<ol start="3">
+<li>转换 (把 <code>Int</code> 类型转换成 <code>String</code> 类型)<pre class=" language-swift"><code class="language-swift"><span class="token punctuation">.</span><span class="token builtin">map</span> <span class="token punctuation">{</span> $<span class="token number">0</span><span class="token punctuation">.</span>description <span class="token punctuation">}</span>
+</code></pre>
+</li>
+<li>响应 (把值绑定到 <code>UILabel</code>)<pre class=" language-swift"><code class="language-swift"><span class="token punctuation">.</span><span class="token function">bind</span><span class="token punctuation">(</span>to<span class="token punctuation">:</span> result<span class="token punctuation">.</span>rx<span class="token punctuation">.</span>text<span class="token punctuation">)</span>
+</code></pre>
+</li>
+<li>管理生命周期<pre class=" language-swift"><code class="language-swift"><span class="token punctuation">.</span><span class="token function">disposed</span><span class="token punctuation">(</span>by<span class="token punctuation">:</span> disposeBag<span class="token punctuation">)</span>
+</code></pre>
+怎么样是不是很简单呢，只需要6行代码我们就完成了这个需求。</li>
+</ol>
+<h1 id="SimpleValidation"><a href="#SimpleValidation" class="headerlink" title="SimpleValidation"></a>SimpleValidation</h1><p>运行效果<br><img src="https://upload-images.jianshu.io/upload_images/2568859-af4eda21d2cc3d77.gif?imageMogr2/auto-orient/strip" alt=""></p>
+<ul>
+<li>当用户输入用户名时，如果用户名不足 5 个字就显示红色提示语，并且无法输入密码，当用户名符合要求时才可以输入密码。</li>
+<li>同样的当用户输入的密码不到 5 个字时也显示红色提示语。</li>
+<li>当用户名和密码有一个不符合要求时底部的绿色按钮不可点击，只有当用户名和密码同时有效时按钮才可点击。</li>
+<li>当点击绿色按钮后弹出一个提示框</li>
+</ul>
+<p>页面由以下元素组成</p>
+<pre class=" language-swift"><code class="language-swift"><span class="token comment" spellcheck="true">/// 用户名</span>
+<span class="token atrule">@IBOutlet</span> <span class="token keyword">weak</span> <span class="token keyword">var</span> usernameOutlet<span class="token punctuation">:</span> <span class="token builtin">UITextField</span><span class="token operator">!</span>
+<span class="token comment" spellcheck="true">/// 用户名红色提示语</span>
+<span class="token atrule">@IBOutlet</span> <span class="token keyword">weak</span> <span class="token keyword">var</span> usernameValidOutlet<span class="token punctuation">:</span> <span class="token builtin">UILabel</span><span class="token operator">!</span>
+
+<span class="token comment" spellcheck="true">/// 密码</span>
+<span class="token atrule">@IBOutlet</span> <span class="token keyword">weak</span> <span class="token keyword">var</span> passwordOutlet<span class="token punctuation">:</span> <span class="token builtin">UITextField</span><span class="token operator">!</span>
+<span class="token comment" spellcheck="true">/// 密码红色提示语</span>
+<span class="token atrule">@IBOutlet</span> <span class="token keyword">weak</span> <span class="token keyword">var</span> passwordValidOutlet<span class="token punctuation">:</span> <span class="token builtin">UILabel</span><span class="token operator">!</span>
+<span class="token comment" spellcheck="true">/// 按钮</span>
+<span class="token atrule">@IBOutlet</span> <span class="token keyword">weak</span> <span class="token keyword">var</span> doSomethingOutlet<span class="token punctuation">:</span> <span class="token builtin">UIButton</span><span class="token operator">!</span>
+</code></pre>
+<p>还是先考虑一下以往我们会怎么实现：</p>
+<ol>
+<li>监听两个  <code>UITextField</code>  的文本框改变(<code>Delegate</code>、<code>KVO</code>、<code>NSNotificationCenter</code>、<code>addTarget</code>)。</li>
+<li>在回调方法中判断用户名是否符合要求，用判断结果去设置提示语是否隐藏和密码框是否可以输入。</li>
+<li>在回调方法中判断密码是否符合要求，用判断结果去设置提示语是否隐藏。</li>
+<li>拿到前两个判断的结果，当前两个的结果都为真时，按钮可以点击。</li>
+<li>添加按钮点击事件。</li>
+</ol>
+<p>看一下用 <a href="https://github.com/ReactiveX/RxSwift" target="_blank" rel="noopener">RxSwift</a> 如何实现。还是我们刚刚所说的核心，把属性或者事件抽象成 <code>Observable</code>，再对 <code>Observable</code> 进行操作。</p>
+<ol>
+<li>用户名格式是否正确 (变换)<pre class=" language-swift"><code class="language-swift"><span class="token keyword">let</span> usernameValid <span class="token operator">=</span> usernameOutlet<span class="token punctuation">.</span>rx<span class="token punctuation">.</span>text<span class="token punctuation">.</span>orEmpty
+<span class="token punctuation">.</span><span class="token builtin">map</span> <span class="token punctuation">{</span> $<span class="token number">0</span><span class="token punctuation">.</span><span class="token builtin">count</span> <span class="token operator">>=</span> minimalUsernameLength <span class="token punctuation">}</span>
+<span class="token punctuation">.</span><span class="token function">share</span><span class="token punctuation">(</span>replay<span class="token punctuation">:</span> <span class="token number">1</span><span class="token punctuation">)</span>
+</code></pre>
+</li>
+<li>密码格式是否正确 (变换)<pre class=" language-swift"><code class="language-swift"><span class="token keyword">let</span> passwordValid <span class="token operator">=</span> passwordOutlet<span class="token punctuation">.</span>rx<span class="token punctuation">.</span>text<span class="token punctuation">.</span>orEmpty
+<span class="token punctuation">.</span><span class="token builtin">map</span> <span class="token punctuation">{</span> $<span class="token number">0</span><span class="token punctuation">.</span><span class="token builtin">count</span> <span class="token operator">>=</span> minimalPasswordLength <span class="token punctuation">}</span>
+<span class="token punctuation">.</span><span class="token function">share</span><span class="token punctuation">(</span>replay<span class="token punctuation">:</span> <span class="token number">1</span><span class="token punctuation">)</span>
+</code></pre>
+</li>
+<li>两者都正确(组合 ，<code>combineLatest</code> 作用上面介绍过，再巩固一下)<pre class=" language-swift"><code class="language-swift"><span class="token keyword">let</span> everythingValid <span class="token operator">=</span> <span class="token builtin">Observable</span><span class="token punctuation">.</span><span class="token function">combineLatest</span><span class="token punctuation">(</span>usernameValid<span class="token punctuation">,</span> passwordValid<span class="token punctuation">)</span> <span class="token punctuation">{</span> $<span class="token number">0</span> <span class="token operator">&amp;&amp;</span> $<span class="token number">1</span> <span class="token punctuation">}</span>
+<span class="token punctuation">.</span><span class="token function">share</span><span class="token punctuation">(</span>replay<span class="token punctuation">:</span> <span class="token number">1</span><span class="token punctuation">)</span>
+</code></pre>
+这里你可能比较疑惑这个 <code>.share(replay: 1)</code> 是干嘛的。</li>
+</ol>
+<p>通俗一点说，当有多个订阅者去订阅同一个 <code>Observable</code> 的时候，我们不希望 <code>Observable</code> 每次有新的订阅者都去执行。</p>
+<ol start="4">
+<li>响应</li>
+</ol>
+<pre class=" language-swift"><code class="language-swift">usernameValid
+<span class="token punctuation">.</span><span class="token function">bind</span><span class="token punctuation">(</span>to<span class="token punctuation">:</span> passwordOutlet<span class="token punctuation">.</span>rx<span class="token punctuation">.</span>isEnabled<span class="token punctuation">)</span>
+<span class="token punctuation">.</span><span class="token function">disposed</span><span class="token punctuation">(</span>by<span class="token punctuation">:</span> disposeBag<span class="token punctuation">)</span>
+</code></pre>
+<pre class=" language-swift"><code class="language-swift">usernameValid
+<span class="token punctuation">.</span><span class="token function">bind</span><span class="token punctuation">(</span>to<span class="token punctuation">:</span> usernameValidOutlet<span class="token punctuation">.</span>rx<span class="token punctuation">.</span>isHidden<span class="token punctuation">)</span>
+<span class="token punctuation">.</span><span class="token function">disposed</span><span class="token punctuation">(</span>by<span class="token punctuation">:</span> disposeBag<span class="token punctuation">)</span>
+</code></pre>
+<pre class=" language-swift"><code class="language-swift">passwordValid
+<span class="token punctuation">.</span><span class="token function">bind</span><span class="token punctuation">(</span>to<span class="token punctuation">:</span> passwordValidOutlet<span class="token punctuation">.</span>rx<span class="token punctuation">.</span>isHidden<span class="token punctuation">)</span>
+<span class="token punctuation">.</span><span class="token function">disposed</span><span class="token punctuation">(</span>by<span class="token punctuation">:</span> disposeBag<span class="token punctuation">)</span>
+</code></pre>
+<pre class=" language-swift"><code class="language-swift">everythingValid
+<span class="token punctuation">.</span><span class="token function">bind</span><span class="token punctuation">(</span>to<span class="token punctuation">:</span> doSomethingOutlet<span class="token punctuation">.</span>rx<span class="token punctuation">.</span>isEnabled<span class="token punctuation">)</span>
+<span class="token punctuation">.</span><span class="token function">disposed</span><span class="token punctuation">(</span>by<span class="token punctuation">:</span> disposeBag<span class="token punctuation">)</span>
+</code></pre>
+<p>由于 <code>.share(replay: 1)</code> 的存在，这个判断密码或者用户名是否合法的操作，不管以后被多少人订阅，只会判断一次，这样可以避免不必要的资源消耗。</p>
+<ol start="5">
+<li>按钮添加点击事件<pre class=" language-swift"><code class="language-swift">doSomethingOutlet<span class="token punctuation">.</span>rx<span class="token punctuation">.</span>tap
+<span class="token punctuation">.</span><span class="token function">subscribe</span><span class="token punctuation">(</span>onNext<span class="token punctuation">:</span> <span class="token punctuation">{</span> <span class="token punctuation">[</span><span class="token keyword">weak</span> <span class="token keyword">self</span><span class="token punctuation">]</span> <span class="token number">_</span> <span class="token keyword">in</span> <span class="token keyword">self</span><span class="token operator">?</span><span class="token punctuation">.</span><span class="token function">showAlert</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">}</span><span class="token punctuation">)</span>
+<span class="token punctuation">.</span><span class="token function">disposed</span><span class="token punctuation">(</span>by<span class="token punctuation">:</span> disposeBag<span class="token punctuation">)</span>
+</code></pre>
+当然这步我们是可以通过扩展的方式让他更加优雅的，这篇我们不做过多讲解。</li>
+</ol>
+<p>最后说句题外话，学东西还是要从简单的学起，这样会多一些正面积极的反馈，就像是打游戏总会一段时间就有一个小的奖励，刺激你继续玩下去。如果一上来就看大量的操作符，各种概念和源码，挫败感一大就不想学了。</p>
+<p>下一篇将更新如何与 MVVM 结合做一个 GitHub 的注册界面。</p>
+
+            </div>
+            <hr>
+
+            
+            <style>
+    #reward {
+        margin: 40px 0;
+        text-align: center;
+    }
+
+    #reward .reward-link {
+        font-size: 1.88rem;
+    }
+
+    #reward .btn-floating:hover {
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2), 0 5px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    #rewardModal {
+        width: 320px;
+        height: 350px;
+    }
+
+    #rewardModal .reward-title {
+        margin: 15px auto;
+        padding-bottom: 5px;
+    }
+
+    #rewardModal .modal-content {
+        padding: 10px;
+    }
+
+    #rewardModal .close {
+        position: absolute;
+        right: 15px;
+        top: 15px;
+        color: rgba(0, 0, 0, 0.5);
+        font-size: 1.3rem;
+        line-height: 20px;
+        cursor: pointer;
+    }
+
+    #rewardModal .reward-tabs {
+        margin: 0 auto;
+        width: 210px;
+    }
+
+    .reward-tabs .tabs {
+        height: 38px;
+        margin: 10px auto;
+        padding-left: 0;
+    }
+
+    .reward-tabs .tabs .tab {
+        height: 38px;
+        line-height: 38px;
+    }
+
+    .reward-tabs .tab a {
+        color: #fff;
+        background-color: #ccc;
+    }
+
+    .reward-tabs .tab a:hover {
+        color: #fff;
+    }
+
+    .reward-tabs .wechat-tab .active {
+        color: #fff;
+        background-color: #22AB38;
+    }
+
+    .reward-tabs .alipay-tab .active {
+        color: #fff;
+        background-color: #019FE8;
+    }
+
+    .reward-tabs .reward-img {
+        width: 210px;
+        height: 210px;
+    }
+</style>
+
+<div id="reward">
+    <a class="reward-link btn-floating btn-large waves-effect waves-light red">赏</a>
+
+    <!-- Modal Structure -->
+    <div id="rewardModal" class="modal">
+        <div class="modal-content">
+            <a class="close"><i class="fa fa-close"></i></a>
+            <h4 class="reward-title">你的赏识是我前进的动力</h4>
+            <div class="reward-content">
+                <div class="reward-tabs">
+                    <ul class="tabs">
+                        <li class="tab wechat-tab waves-effect waves-light"><a class="active" href="#wechat">微信</a></li>
+                        <li class="tab alipay-tab waves-effect waves-light"><a href="#alipay">支付宝</a></li>
+                    </ul>
+                    <div id="wechat">
+                        <img src="/medias/reward/wechat.png" class="reward-img" alt="微信打赏二维码">
+                    </div>
+                    <div id="alipay">
+                        <img src="/medias/reward/alipay.png" class="reward-img" alt="支付宝打赏二维码">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(function () {
+        $('#reward .reward-link').on('click', function () {
+            $('#rewardModal').openModal();
+        });
+
+        $('#rewardModal .close').on('click', function () {
+            $('#rewardModal').closeModal();
+        });
+    });
+</script>
+            
+
+            <link rel="stylesheet" type="text/css" href="/libs/share/css/share.min.css">
+
+<div id="article-share">
+    
+    <div class="social-share" data-disabled="qzone" data-wechat-qrcode-helper="<p>微信里点“发现”->“扫一扫”二维码便可查看分享。</p>"></div>
+    
+</div>
+
+<script src="/libs/share/js/social-share.min.js"></script>
+
+            <div class="reprint">
+                <p>
+                    <span class="reprint-tip">
+                        <i class="fa fa-exclamation-circle"></i>&nbsp;&nbsp;转载请注明:
+                    </span>
+                    <a href="https://insectqy.github.io" class="b-link-green">大青虫</a>
+                    <i class="fa fa-angle-right fa-lg fa-fw text-color"></i>
+                    <a href="/2019/02/13/ling-ji-chu-ye-neng-kan-dong-de-rxswift-guan-fang-example-jie-xi-1-bindings/" class="b-link-green">零基础也能看懂的 RxSwift 官方 Example 解析(1) Bindings</a>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+<article id="prenext-posts" class="prev-next articles">
+    <div class="row article-row">
+        
+        <div class="article col s12 m6" data-aos="fade-up">
+            <div class="article-badge left-badge text-color">
+                <i class="fa fa-chevron-left"></i>&nbsp;上一篇</div>
+            <div class="card">
+                <a href="/2019/02/13/yong-rxswift-wei-controller-shou-shen-1-you-ya-de-shi-yong-wang-luo-qing-qiu-moya-shu-ju-huan-cun-cache/">
+                    <div class="card-image">
+                        
+                        
+                        <img src="/medias/featureimages/8.jpg" class="responsive-img" alt="用 RxSwift 为 Controller 瘦身(1)，优雅的使用网络请求(Moya) + 数据缓存(Cache)">
+                        
+                        <span class="card-title">用 RxSwift 为 Controller 瘦身(1)，优雅的使用网络请求(Moya) + 数据缓存(Cache)</span>
+                    </div>
+                </a>
+                <div class="card-content article-content">
+                    <div class="summary">概述
+View Controller 向来是 MVC (Model-View-View Controller) 中最让人头疼的一环，MVC 架构本身并不复杂，但开发者很容易将大量代码扔到用于协调 View 和 Model 的 Control</div>
+                    <div class="publish-info">
+                        <span class="publish-date">
+                            <i class="fa fa-clock-o fa-fw icon-date"></i>2019-02-13
+                        </span>
+                        <span class="publish-author">
+                            
+                            <i class="fa fa-bookmark fa-fw icon-category"></i>
+                            
+                            <a href="/categories/iOS/" class="post-category" target="_blank">
+                                    iOS
+                                </a>
+                            
+                            
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="card-action article-tags">
+                    
+                    <a href="/tags/RxSwift/" target="_blank">
+                        <span class="chip bg-color">RxSwift</span>
+                    </a>
+                    
+                    <a href="/tags/Moya/" target="_blank">
+                        <span class="chip bg-color">Moya</span>
+                    </a>
+                    
+                    <a href="/tags/Cache/" target="_blank">
+                        <span class="chip bg-color">Cache</span>
+                    </a>
+                    
+                </div>
+                
+            </div>
+        </div>
+        
+        
+        <div class="article col s12 m6" data-aos="fade-up">
+            <div class="article-badge right-badge text-color">
+                下一篇&nbsp;<i class="fa fa-chevron-right"></i>
+            </div>
+            <div class="card">
+                <a href="/2019/02/13/zai-ios-shang-shi-xian-ji-yu-xie-yi-de-mvp/">
+                    <div class="card-image">
+                        
+                        
+                        <img src="/medias/featureimages/7.jpg" class="responsive-img" alt="在 iOS 上实现基于协议的 MVP">
+                        
+                        <span class="card-title">在 iOS 上实现基于协议的 MVP</span>
+                    </div>
+                </a>
+                <div class="card-content article-content">
+                    <div class="summary">概述如果你做过 Android 开发，那你一定知道，MVP 是 Google 官方推荐的 Android 开发架构。和 iOS 一样，Android 也存在着如果代码不够规范导致 C 层(Activity)过于臃肿的问题。
+对于 MVP ，</div>
+                    <div class="publish-info">
+                            <span class="publish-date">
+                                <i class="fa fa-clock-o fa-fw icon-date"></i>2019-02-13
+                            </span>
+                        <span class="publish-author">
+                            
+                            <i class="fa fa-bookmark fa-fw icon-category"></i>
+                            
+                            <a href="/categories/iOS/" class="post-category" target="_blank">
+                                    iOS
+                                </a>
+                            
+                            
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="card-action article-tags">
+                    
+                    <a href="/tags/MVP/" target="_blank">
+                        <span class="chip bg-color">MVP</span>
+                    </a>
+                    
+                    <a href="/tags/Swift/" target="_blank">
+                        <span class="chip bg-color">Swift</span>
+                    </a>
+                    
+                    <a href="/tags/Design-Patterns/" target="_blank">
+                        <span class="chip bg-color">Design Patterns</span>
+                    </a>
+                    
+                </div>
+                
+            </div>
+        </div>
+        
+    </div>
+</article>
+</div>
+
+
+<script>
+    $('#articleContent').on('copy', function (e) {
+        // IE8 or earlier browser is 'undefined'
+        if (typeof window.getSelection === 'undefined') return;
+
+        var selection = window.getSelection();
+        // if the selection is short let's not annoy our users.
+        if (('' + selection).length < Number.parseInt('120')) {
+            return;
+        }
+
+        // create a div outside of the visible area and fill it with the selected text.
+        var bodyElement = document.getElementsByTagName('body')[0];
+        var newdiv = document.createElement('div');
+        newdiv.style.position = 'absolute';
+        newdiv.style.left = '-99999px';
+        bodyElement.appendChild(newdiv);
+        newdiv.appendChild(selection.getRangeAt(0).cloneContents());
+
+        // we need a <pre> tag workaround.
+        // otherwise the text inside "pre" loses all the line breaks!
+        if (selection.getRangeAt(0).commonAncestorContainer.nodeName === 'PRE') {
+            newdiv.innerHTML = "<pre>" + newdiv.innerHTML + "</pre>";
+        }
+
+        var url = document.location.href;
+        newdiv.innerHTML += '<br />'
+            + '来源: 大青虫<br />'
+            + '作者: InsectQY<br />'
+            + '链接: <a href="' + url + '">' + url + '</a><br />'
+            + '本文章著作权归作者所有，任何形式的转载都请注明出处。';
+
+        selection.selectAllChildren(newdiv);
+        window.setTimeout(function () {bodyElement.removeChild(newdiv);}, 200);
+    });
+</script>
+
+    
+
+</main>
+
+
+<footer class="page-footer bg-color">
+    <div class="container row center-align">
+        <div class="col s12 m8 l8 copy-right">
+            <!-- 本站由&copy;<a href="https://blinkfox.github.io/" target="_blank">Blinkfox</a>基于
+            <a href="https://hexo.io/" target="_blank">Hexo</a> 的
+            <a href="https://github.com/blinkfox/hexo-theme-matery" target="_blank">hexo-theme-matery</a>主题搭建. -->
+
+            
+
+            
+			
+                <br>
+                
+    <!--             <span id="busuanzi_container_site_pv">
+                    <i class="fa fa-heart-o"></i>
+                    本站总访问量 <span id="busuanzi_value_site_pv" class="white-color"></span>
+                </span> -->
+                
+                
+        <!--         <span id="busuanzi_container_site_uv">
+                    <i class="fa fa-users"></i>
+                    次,&nbsp;访客数 <span id="busuanzi_value_site_uv" class="white-color"></span> 人.
+                </span> -->
+                
+            
+        </div>
+        <div class="col s12 m4 l4 social-link social-statis">
+    <a href="https://github.com/InsectQY" class="tooltipped" target="_blank" data-tooltip="访问我的GitHub" data-position="top" data-delay="50">
+        <i class="fa fa-github"></i>
+    </a>
+
+
+
+    <a href="mailto:704861917@qq.com" class="tooltipped" target="_blank" data-tooltip="邮件联系我" data-position="top" data-delay="50">
+        <i class="fa fa-envelope-open"></i>
+    </a>
+
+
+
+    <a href="tencent://AddContact/?fromId=50&fromSubId=1&subcmd=all&uin=704861917" class="tooltipped" data-tooltip="QQ联系我: 704861917" data-position="top" data-delay="50">
+        <i class="fa fa-qq"></i>
+    </a>
+
+
+</div>
+    </div>
+</footer>
+
+<div class="progress-bar"></div>
+
+
+<!-- 搜索遮罩框 -->
+<div id="searchModal" class="modal">
+    <div class="modal-content">
+        <div class="search-header">
+            <span class="title"><i class="fa fa-search"></i>&nbsp;&nbsp;搜索</span>
+            <input type="search" id="searchInput" name="s" placeholder="请输入搜索的关键字" class="search-input" autofocus>
+        </div>
+        <div id="searchResult"></div>
+    </div>
+</div>
+
+<script src="/js/search.js"></script>
+<script type="text/javascript">
+    searchFunc("/" + "search.xml", 'searchInput', 'searchResult');
+</script>
+<!-- 回到顶部按钮 -->
+<div id="backTop" class="top-scroll">
+    <a class="btn-floating btn-large waves-effect waves-light" href="#!">
+        <i class="fa fa-angle-up"></i>
+    </a>
+</div>
+
+
+<script src="/libs/materialize/js/materialize.min.js"></script>
+<script src="/libs/masonry/masonry.pkgd.min.js"></script>
+<script src="/libs/aos/aos.js"></script>
+<script src="/libs/scrollprogress/scrollProgress.min.js"></script>
+<script src="/libs/lightGallery/js/lightgallery-all.min.js"></script>
+<script src="/js/matery.js"></script>
+
+<!-- Global site tag (gtag.js) - Google Analytics -->
+
+
+
+    <script src="/libs/others/clicklove.js"></script>
+
+
+    <script async src="/libs/others/busuanzi.pure.mini.js"></script>
+
+
+</body>
+</html>

@@ -312,11 +312,90 @@ $('.bg-cover').css('background-image', 'url(/medias/banner/' + new Date().getDay
             </div>
             <div class="tag-chips">
                 
+                
+                <a href="/tags/MVP/" title="MVP: 1">
+                    <span class="chip center-align waves-effect waves-light
+                             chip-default " data-tagname="MVP" style="background-color: #F9EBEA;">MVP
+                        <span class="tag-length">1</span>
+                    </span>
+                </a>
+                
+                
+                <a href="/tags/Swift/" title="Swift: 2">
+                    <span class="chip center-align waves-effect waves-light
+                             chip-default " data-tagname="Swift" style="background-color: #F5EEF8;">Swift
+                        <span class="tag-length">2</span>
+                    </span>
+                </a>
+                
+                
+                <a href="/tags/Design-Patterns/" title="Design Patterns: 1">
+                    <span class="chip center-align waves-effect waves-light
+                             chip-default " data-tagname="Design Patterns" style="background-color: #D5F5E3;">Design Patterns
+                        <span class="tag-length">1</span>
+                    </span>
+                </a>
+                
+                
+                <a href="/tags/RxSwift/" title="RxSwift: 2">
+                    <span class="chip center-align waves-effect waves-light
+                             chip-default " data-tagname="RxSwift" style="background-color: #E8F8F5;">RxSwift
+                        <span class="tag-length">2</span>
+                    </span>
+                </a>
+                
+                
+                <a href="/tags/Bindings/" title="Bindings: 1">
+                    <span class="chip center-align waves-effect waves-light
+                             chip-default " data-tagname="Bindings" style="background-color: #FEF9E7;">Bindings
+                        <span class="tag-length">1</span>
+                    </span>
+                </a>
+                
+                
+                <a href="/tags/Moya/" title="Moya: 1">
+                    <span class="chip center-align waves-effect waves-light
+                             chip-default " data-tagname="Moya" style="background-color: #F8F9F9;">Moya
+                        <span class="tag-length">1</span>
+                    </span>
+                </a>
+                
+                
+                <a href="/tags/Cache/" title="Cache: 1">
+                    <span class="chip center-align waves-effect waves-light
+                             chip-default " data-tagname="Cache" style="background-color: #82E0AA;">Cache
+                        <span class="tag-length">1</span>
+                    </span>
+                </a>
+                
             </div>
         </div>
     </div>
 </div>
 
+    
+    <link rel="stylesheet" type="text/css" href="/libs/jqcloud/jqcloud.css">
+<style type="text/css">
+    #tag-wordcloud {
+        width: 100%;
+        height: 300px;
+    }
+</style>
+
+<div class="container" data-aos="fade-up">
+    <div class="card">
+        <div id="tag-wordcloud" class="card-content"></div>
+    </div>
+</div>
+
+<script type="text/javascript" src="/libs/jqcloud/jqcloud-1.0.4.min.js"></script>
+<script type="text/javascript">
+    
+
+    $('#tag-wordcloud').jQCloud([{"text":"MVP","weight":1,"link":"https://insectqy.github.io/tags/MVP/"},{"text":"Swift","weight":2,"link":"https://insectqy.github.io/tags/Swift/"},{"text":"Design Patterns","weight":1,"link":"https://insectqy.github.io/tags/Design-Patterns/"},{"text":"RxSwift","weight":2,"link":"https://insectqy.github.io/tags/RxSwift/"},{"text":"Bindings","weight":1,"link":"https://insectqy.github.io/tags/Bindings/"},{"text":"Moya","weight":1,"link":"https://insectqy.github.io/tags/Moya/"},{"text":"Cache","weight":1,"link":"https://insectqy.github.io/tags/Cache/"}], {
+        autoResize: true
+    });
+</script>
     
 
 </main>
