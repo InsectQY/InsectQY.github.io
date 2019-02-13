@@ -354,9 +354,9 @@
 <p>这种方式有什么不好呢？为什么我们的 C 层写着写着就变得异常臃肿？其实很大原因是因为 C 层的职责不够明确， C 层既负责了逻辑的处理，也负责了 UI 的变化。</p>
 <h1 id="MVP"><a href="#MVP" class="headerlink" title="MVP"></a>MVP</h1><p>接下来我们用 MVP 的思想优化这个 Demo。MVP 所做的事情很简单，就是将业务逻辑和视图逻辑抽象到 Protocol 中。</p>
 <ul>
-<li style="list-style: none"><input type="checkbox"> Model: 在 iOS 的 MVC 中 Model 通常都是指数据模型，目的是方便我们进行数据的操作。但在 MVP 中 Model 除了提供数据模型外，还负责处理具体的业务逻辑，比如我们这里的登录请求。需要注意的是，在 Model 里不应当持有 View。</li>
-<li style="list-style: none"><input type="checkbox"> View: 只负责响应 UI 变化，不负责处理业务逻辑。</li>
-<li style="list-style: none"><input type="checkbox"> Presenter:  负责完成 View 于 Model 间的交互。</li>
+<li>Model: 在 iOS 的 MVC 中 Model 通常都是指数据模型，目的是方便我们进行数据的操作。但在 MVP 中 Model 除了提供数据模型外，还负责处理具体的业务逻辑，比如我们这里的登录请求。需要注意的是，在 Model 里不应当持有 View。</li>
+<li>View: 只负责响应 UI 变化，不负责处理业务逻辑。</li>
+<li>Presenter:  负责完成 View 于 Model 间的交互。</li>
 </ul>
 <p>完工以后，我们的目录是这样的，接下来开始一步步编写思路。<br><img src="https://upload-images.jianshu.io/upload_images/2568859-44d994cda7d71414.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="目录"></p>
 <h1 id="定义-Model，View，Presenter-的-Protocol"><a href="#定义-Model，View，Presenter-的-Protocol" class="headerlink" title="定义 Model，View，Presenter 的 Protocol"></a>定义 Model，View，Presenter 的 Protocol</h1><h2 id="Model-Protocol"><a href="#Model-Protocol" class="headerlink" title="Model - Protocol"></a>Model - Protocol</h2><p>首先登录返回的用户信息类肯定是必不可少的</p>
@@ -393,17 +393,17 @@
 </code></pre>
 <p>对于View的接口，去观察功能上的操作，然后考虑：</p>
 <ul>
-<li style="list-style: none"><input type="checkbox"> 该操作需要什么？（account, password）</li>
-<li style="list-style: none"><input type="checkbox"> 该操作的结果，对应的反馈？(showToast, loginSuccess, loginFailure)</li>
-<li style="list-style: none"><input type="checkbox"> 该操作过程中对应的友好的交互？(showLoading)</li>
+<li>该操作需要什么？（account, password）</li>
+<li>该操作的结果，对应的反馈？(showToast, loginSuccess, loginFailure)</li>
+<li>该操作过程中对应的友好的交互？(showLoading)</li>
 </ul>
 <h2 id="Presenter-Protocol"><a href="#Presenter-Protocol" class="headerlink" title="Presenter - Protocol"></a>Presenter - Protocol</h2><p>Presenter Protocol 作为连接 Model 和 View 的中间桥梁，需要将二者连接起来，因此他需要完成以下工作：</p>
 <ul>
-<li style="list-style: none"><input type="checkbox"> 响应登录按钮点击事件</li>
-<li style="list-style: none"><input type="checkbox"> 响应不合法事件，显示提示</li>
-<li style="list-style: none"><input type="checkbox"> 登录请求中</li>
-<li style="list-style: none"><input type="checkbox"> 网络请求成功回调</li>
-<li style="list-style: none"><input type="checkbox"> 网络请求失败回调</li>
+<li>响应登录按钮点击事件</li>
+<li>响应不合法事件，显示提示</li>
+<li>登录请求中</li>
+<li>网络请求成功回调</li>
+<li>网络请求失败回调</li>
 </ul>
 <p>因此，Presenter 就可以这么定义：</p>
 <pre class=" language-Swift"><code class="language-Swift">protocol LoginPresenterProtocol: class {
@@ -519,44 +519,44 @@ extension LoginPresenter: LoginPresenterProtocol {
     }
 }
 </code></pre>
-<pre class=" language-swift"><code class="language-swift"><span class="token comment" spellcheck="true">// MARK: - LoginViewProtocol</span>
-<span class="token keyword">extension</span> <span class="token builtin">LoginViewController</span><span class="token punctuation">:</span> <span class="token builtin">LoginViewProtocol</span> <span class="token punctuation">{</span>
+<pre class=" language-Swift"><code class="language-Swift">// MARK: - LoginViewProtocol
+extension LoginViewController: LoginViewProtocol {
 
-    <span class="token keyword">func</span> <span class="token function">account</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">-</span><span class="token operator">></span> <span class="token builtin">String</span> <span class="token punctuation">{</span>
-        <span class="token keyword">return</span> accountTF<span class="token punctuation">.</span>text <span class="token operator">?</span><span class="token operator">?</span> <span class="token string">""</span>
-    <span class="token punctuation">}</span>
+    func account() -> String {
+        return accountTF.text ?? ""
+    }
 
-    <span class="token keyword">func</span> <span class="token function">password</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">-</span><span class="token operator">></span> <span class="token builtin">String</span> <span class="token punctuation">{</span>
-        <span class="token keyword">return</span> pwdTF<span class="token punctuation">.</span>text <span class="token operator">?</span><span class="token operator">?</span> <span class="token string">""</span>
-    <span class="token punctuation">}</span>
+    func password() -> String {
+        return pwdTF.text ?? ""
+    }
 
-    <span class="token keyword">func</span> <span class="token function">showLoading</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token builtin">Toast</span><span class="token punctuation">.</span><span class="token function">loading</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
-    <span class="token punctuation">}</span>
+    func showLoading() {
+        Toast.loading()
+    }
 
-    <span class="token keyword">func</span> <span class="token function">showToast</span><span class="token punctuation">(</span><span class="token number">_</span> text<span class="token punctuation">:</span> <span class="token builtin">String</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token builtin">Toast</span><span class="token punctuation">.</span><span class="token function">show</span><span class="token punctuation">(</span>info<span class="token punctuation">:</span> text<span class="token punctuation">)</span>
-    <span class="token punctuation">}</span>
+    func showToast(_ text: String) {
+        Toast.show(info: text)
+    }
 
-    <span class="token keyword">func</span> <span class="token function">loginSuccess</span><span class="token punctuation">(</span><span class="token number">_</span> response<span class="token punctuation">:</span> <span class="token builtin">User</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    func loginSuccess(_ response: User) {
 
-        <span class="token builtin">Toast</span><span class="token punctuation">.</span><span class="token function">show</span><span class="token punctuation">(</span>info<span class="token punctuation">:</span> <span class="token string">""</span>
-        \<span class="token punctuation">(</span>response<span class="token punctuation">.</span>name<span class="token punctuation">)</span> \n
+        Toast.show(info: ""
+        \(response.name) \n
         登录成功
-        <span class="token string">""</span><span class="token punctuation">)</span>
-        <span class="token function">dismiss</span><span class="token punctuation">(</span>animated<span class="token punctuation">:</span> <span class="token boolean">true</span><span class="token punctuation">,</span> completion<span class="token punctuation">:</span> <span class="token constant">nil</span><span class="token punctuation">)</span>
-    <span class="token punctuation">}</span>
+        "")
+        dismiss(animated: true, completion: nil)
+    }
 
-    <span class="token keyword">func</span> <span class="token function">loginFailure</span><span class="token punctuation">(</span><span class="token number">_</span> error<span class="token punctuation">:</span> <span class="token builtin">String</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token builtin">Toast</span><span class="token punctuation">.</span><span class="token function">show</span><span class="token punctuation">(</span>info<span class="token punctuation">:</span> error<span class="token punctuation">)</span>
-    <span class="token punctuation">}</span>
-<span class="token punctuation">}</span>
+    func loginFailure(_ error: String) {
+        Toast.show(info: error)
+    }
+}
 </code></pre>
 <p>至此，我们就通过 MVP 实现了之前所设想的业务逻辑和 UI 变换分离的 C 层。</p>
 <ul>
-<li style="list-style: none"><input type="checkbox"> Button 的 点击负责发起登录任务，但又不负责具体实现，而是由Presenter 转接给 Model 去实现</li>
-<li style="list-style: none"><input type="checkbox"> Controller 什么时候显示 Toast，什么时候跳转界面直接由 Presenter 告诉他，他只做一个 View 该做的事情</li>
-<li style="list-style: none"><input type="checkbox"> Controller 里没有任何逻辑处理，所有的逻辑处理都在 Model 中完成了</li>
+<li>Button 的 点击负责发起登录任务，但又不负责具体实现，而是由Presenter 转接给 Model 去实现</li>
+<li>Controller 什么时候显示 Toast，什么时候跳转界面直接由 Presenter 告诉他，他只做一个 View 该做的事情</li>
+<li>Controller 里没有任何逻辑处理，所有的逻辑处理都在 Model 中完成了</li>
 </ul>
 <h1 id="最后"><a href="#最后" class="headerlink" title="最后"></a>最后</h1><p>看到这里其实你会发现，虽然我们的业务逻辑变得清晰了。但不可避免的我们增加了更多的类和代码，这点其实非常类似于 MVVM，相比原来简单的实现，我们需要写更多的胶水代码。</p>
 <p>但是随着项目规模的增大，代码逻辑清晰所带来的影响是非常深远的。维护低耦合，高内聚，优雅，健壮的代码不管对自己或是别人来说都是一种享受。</p>
