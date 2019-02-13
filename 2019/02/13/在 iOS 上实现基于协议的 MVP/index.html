@@ -341,14 +341,14 @@
 <li>本地模拟网络请求，随机返回用户登录成功或是失败。登录成功时，返回首页并显示用户名。登录失败时，显示 Error 的信息。<br><img src="https://upload-images.jianshu.io/upload_images/2568859-cdb3052db5c2bf25.gif?imageMogr2/auto-orient/strip" alt="运行效果"></li>
 </ol>
 <p>试想一下在传统的 MVC 中我们会如何处理，C 持有两个 <code>UITextField</code>。</p>
-<pre class=" language-Java"><code class="language-Java"> @IBOutlet private weak var accountTF: UITextField!
- @IBOutlet private weak var pwdTF: UITextField!
+<pre class=" language-swift"><code class="language-swift"> <span class="token atrule">@IBOutlet</span> <span class="token keyword">private</span> <span class="token keyword">weak</span> <span class="token keyword">var</span> accountTF<span class="token punctuation">:</span> <span class="token builtin">UITextField</span><span class="token operator">!</span>
+ <span class="token atrule">@IBOutlet</span> <span class="token keyword">private</span> <span class="token keyword">weak</span> <span class="token keyword">var</span> pwdTF<span class="token punctuation">:</span> <span class="token builtin">UITextField</span><span class="token operator">!</span>
 </code></pre>
 <p>并添加按钮点击事件</p>
-<pre class=" language-Java"><code class="language-Java">// MARK: - 点击登录
- @IBAction func loginBtnDidClick() {
+<pre class=" language-swift"><code class="language-swift"><span class="token comment" spellcheck="true">// MARK: - 点击登录</span>
+ <span class="token atrule">@IBAction</span> <span class="token keyword">func</span> <span class="token function">loginBtnDidClick</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
 
- }
+ <span class="token punctuation">}</span>
 </code></pre>
 <p>在点击事件中，判断两个 <code>UITextField</code> 的输入内容是否合法。不合法时显示 Toast，合法时发起网络请求，在成功和失败的回调中分别对 UI 做出处理。</p>
 <p>这种方式有什么不好呢？为什么我们的 C 层写着写着就变得异常臃肿？其实很大原因是因为 C 层的职责不够明确， C 层既负责了逻辑的处理，也负责了 UI 的变化。</p>
@@ -360,20 +360,24 @@
 </ul>
 <p>完工以后，我们的目录是这样的，接下来开始一步步编写思路。<br><img src="https://upload-images.jianshu.io/upload_images/2568859-44d994cda7d71414.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="目录"></p>
 <h1 id="定义-Model，View，Presenter-的-Protocol"><a href="#定义-Model，View，Presenter-的-Protocol" class="headerlink" title="定义 Model，View，Presenter 的 Protocol"></a>定义 Model，View，Presenter 的 Protocol</h1><h2 id="Model-Protocol"><a href="#Model-Protocol" class="headerlink" title="Model - Protocol"></a>Model - Protocol</h2><p>首先登录返回的用户信息类肯定是必不可少的</p>
-<pre><code>struct User: Codable {
+<pre class=" language-swift"><code class="language-swift"><span class="token keyword">struct</span> <span class="token builtin">User</span><span class="token punctuation">:</span> <span class="token builtin">Codable</span> <span class="token punctuation">{</span>
 
-    /// 姓名
-    let name: String
-    /// 年龄
-    let age: Int
-}
-</code></pre><p>其次还需要一个 业务方法 Login</p>
-<pre><code>protocol LoginModelProtocol: class {
+    <span class="token comment" spellcheck="true">/// 姓名</span>
+    <span class="token keyword">let</span> name<span class="token punctuation">:</span> <span class="token builtin">String</span>
+    <span class="token comment" spellcheck="true">/// 年龄</span>
+    <span class="token keyword">let</span> age<span class="token punctuation">:</span> <span class="token builtin">Int</span>
+<span class="token punctuation">}</span>
+``` swift
+其次还需要一个 业务方法 <span class="token builtin">Login</span>
+</code></pre>
+<p>protocol LoginModelProtocol: class {</p>
+<pre><code>/// 登录逻辑处理
+func login(account: String, pwd: String)
+</code></pre><p>}</p>
+<pre><code>## View - Protocol
 
-    /// 登录逻辑处理
-    func login(account: String, pwd: String)
-}
-</code></pre><h2 id="View-Protocol"><a href="#View-Protocol" class="headerlink" title="View - Protocol"></a>View - Protocol</h2><pre><code>protocol LoginViewProtocol: class {
+``` swift
+protocol LoginViewProtocol: class {
 
     /// 账号
     func account() -&gt; String
@@ -403,152 +407,153 @@
 <li>网络请求失败回调</li>
 </ul>
 <p>因此，Presenter 就可以这么定义：</p>
-<pre class=" language-Java"><code class="language-Java">protocol LoginPresenterProtocol: class {
+<pre class=" language-swift"><code class="language-swift">protocol <span class="token builtin">LoginPresenterProtocol</span><span class="token punctuation">:</span> <span class="token keyword">class</span> <span class="token punctuation">{</span>
 
-    /// 登录
-    func login()
-    /// 显示提示
-    func showToast(_ text: String)
-    /// 登录请求中
-    func loading()
-    /// 网络请求返回, 登录成功
-    func loginSuccess(_ response: User)
-    /// 网络请求返回, 登录失败
-    func loginFailure(_ error: String)
-}
+    <span class="token comment" spellcheck="true">/// 登录</span>
+    <span class="token keyword">func</span> <span class="token function">login</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+    <span class="token comment" spellcheck="true">/// 显示提示</span>
+    <span class="token keyword">func</span> <span class="token function">showToast</span><span class="token punctuation">(</span><span class="token number">_</span> text<span class="token punctuation">:</span> <span class="token builtin">String</span><span class="token punctuation">)</span>
+    <span class="token comment" spellcheck="true">/// 登录请求中</span>
+    <span class="token keyword">func</span> <span class="token function">loading</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+    <span class="token comment" spellcheck="true">/// 网络请求返回, 登录成功</span>
+    <span class="token keyword">func</span> <span class="token function">loginSuccess</span><span class="token punctuation">(</span><span class="token number">_</span> response<span class="token punctuation">:</span> <span class="token builtin">User</span><span class="token punctuation">)</span>
+    <span class="token comment" spellcheck="true">/// 网络请求返回, 登录失败</span>
+    <span class="token keyword">func</span> <span class="token function">loginFailure</span><span class="token punctuation">(</span><span class="token number">_</span> error<span class="token punctuation">:</span> <span class="token builtin">String</span><span class="token punctuation">)</span>
+<span class="token punctuation">}</span>
 </code></pre>
 <h1 id="Model，View，Presenter-的具体实现"><a href="#Model，View，Presenter-的具体实现" class="headerlink" title="Model，View，Presenter 的具体实现"></a>Model，View，Presenter 的具体实现</h1><h2 id="Model"><a href="#Model" class="headerlink" title="Model"></a>Model</h2><p>还记得我们刚刚所说的，在 MVP 中，Model 的工作就是完成具体的业务和逻辑操作。比如说网络请求，持久化数据增删改查等。同时Model中又不会包含任何View。</p>
-<pre class=" language-Java"><code class="language-Java">class LoginModel {
+<pre class=" language-swift"><code class="language-swift"><span class="token keyword">class</span> <span class="token class-name">LoginModel</span> <span class="token punctuation">{</span>
 
-    weak var present: LoginPresenter?
+    <span class="token keyword">weak</span> <span class="token keyword">var</span> present<span class="token punctuation">:</span> <span class="token builtin">LoginPresenter</span><span class="token operator">?</span>
 
-    init(present: LoginPresenter?) {
-        self.present = present
-    }
-}
+    <span class="token keyword">init</span><span class="token punctuation">(</span>present<span class="token punctuation">:</span> <span class="token builtin">LoginPresenter</span><span class="token operator">?</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">self</span><span class="token punctuation">.</span>present <span class="token operator">=</span> present
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
 
-// MARK: - LoginModelProtocol
-extension LoginModel: LoginModelProtocol {
+<span class="token comment" spellcheck="true">// MARK: - LoginModelProtocol</span>
+<span class="token keyword">extension</span> <span class="token builtin">LoginModel</span><span class="token punctuation">:</span> <span class="token builtin">LoginModelProtocol</span> <span class="token punctuation">{</span>
 
-    func login(account: String?, pwd: String?) {
+    <span class="token keyword">func</span> <span class="token function">login</span><span class="token punctuation">(</span>account<span class="token punctuation">:</span> <span class="token builtin">String</span><span class="token operator">?</span><span class="token punctuation">,</span> pwd<span class="token punctuation">:</span> <span class="token builtin">String</span><span class="token operator">?</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
 
-        guard let account = account, let pwd = pwd else {
+        <span class="token keyword">guard</span> <span class="token keyword">let</span> account <span class="token operator">=</span> account<span class="token punctuation">,</span> <span class="token keyword">let</span> pwd <span class="token operator">=</span> pwd <span class="token keyword">else</span> <span class="token punctuation">{</span>
 
-            present?.showToast("账号密码不合法") 
-            return
-        }
-        if account.count == 0 || pwd.count == 0 {
+            present<span class="token operator">?</span><span class="token punctuation">.</span><span class="token function">showToast</span><span class="token punctuation">(</span><span class="token string">"账号密码不合法"</span><span class="token punctuation">)</span> 
+            <span class="token keyword">return</span>
+        <span class="token punctuation">}</span>
+        <span class="token keyword">if</span> account<span class="token punctuation">.</span><span class="token builtin">count</span> <span class="token operator">==</span> <span class="token number">0</span> <span class="token operator">||</span> pwd<span class="token punctuation">.</span><span class="token builtin">count</span> <span class="token operator">==</span> <span class="token number">0</span> <span class="token punctuation">{</span>
 
-            present?.showToast("账号密码不合法")
-            return
-        }
+            present<span class="token operator">?</span><span class="token punctuation">.</span><span class="token function">showToast</span><span class="token punctuation">(</span><span class="token string">"账号密码不合法"</span><span class="token punctuation">)</span>
+            <span class="token keyword">return</span>
+        <span class="token punctuation">}</span>
 
-        present?.loading()
-        Net.login(account: account, pwd: pwd, success: { [weak self] in
-            self?.present?.loginSuccess($0)
-        }) { [weak self] in
-            self?.present?.loginFailure($0)
-        }
-    }
-}
+        present<span class="token operator">?</span><span class="token punctuation">.</span><span class="token function">loading</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+        <span class="token builtin">Net</span><span class="token punctuation">.</span><span class="token function">login</span><span class="token punctuation">(</span>account<span class="token punctuation">:</span> account<span class="token punctuation">,</span> pwd<span class="token punctuation">:</span> pwd<span class="token punctuation">,</span> success<span class="token punctuation">:</span> <span class="token punctuation">{</span> <span class="token punctuation">[</span><span class="token keyword">weak</span> <span class="token keyword">self</span><span class="token punctuation">]</span> <span class="token keyword">in</span>
+            <span class="token keyword">self</span><span class="token operator">?</span><span class="token punctuation">.</span>present<span class="token operator">?</span><span class="token punctuation">.</span><span class="token function">loginSuccess</span><span class="token punctuation">(</span>$<span class="token number">0</span><span class="token punctuation">)</span>
+        <span class="token punctuation">}</span><span class="token punctuation">)</span> <span class="token punctuation">{</span> <span class="token punctuation">[</span><span class="token keyword">weak</span> <span class="token keyword">self</span><span class="token punctuation">]</span> <span class="token keyword">in</span>
+            <span class="token keyword">self</span><span class="token operator">?</span><span class="token punctuation">.</span>present<span class="token operator">?</span><span class="token punctuation">.</span><span class="token function">loginFailure</span><span class="token punctuation">(</span>$<span class="token number">0</span><span class="token punctuation">)</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
 </code></pre>
-<h2 id="Presenter"><a href="#Presenter" class="headerlink" title="Presenter"></a>Presenter</h2><pre class=" language-Java"><code class="language-Java">class LoginPresenter {
+<h2 id="Presenter"><a href="#Presenter" class="headerlink" title="Presenter"></a>Presenter</h2><pre class=" language-swift"><code class="language-swift"><span class="token keyword">class</span> <span class="token class-name">LoginPresenter</span> <span class="token punctuation">{</span>
 
-    var model: LoginModelProtocol?
-    weak var view: LoginViewProtocol?
+    <span class="token keyword">var</span> model<span class="token punctuation">:</span> <span class="token builtin">LoginModelProtocol</span><span class="token operator">?</span>
+    <span class="token keyword">weak</span> <span class="token keyword">var</span> view<span class="token punctuation">:</span> <span class="token builtin">LoginViewProtocol</span><span class="token operator">?</span>
 
-    init(view: LoginViewProtocol?) {
+    <span class="token keyword">init</span><span class="token punctuation">(</span>view<span class="token punctuation">:</span> <span class="token builtin">LoginViewProtocol</span><span class="token operator">?</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
 
-        self.view = view
-        model = LoginModel(present: self)
-    }
-}
+        <span class="token keyword">self</span><span class="token punctuation">.</span>view <span class="token operator">=</span> view
+        model <span class="token operator">=</span> <span class="token function">LoginModel</span><span class="token punctuation">(</span>present<span class="token punctuation">:</span> <span class="token keyword">self</span><span class="token punctuation">)</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
 
-// MARK: - LoginPresenterProtocol
-extension LoginPresenter: LoginPresenterProtocol {
+<span class="token comment" spellcheck="true">// MARK: - LoginPresenterProtocol</span>
+<span class="token keyword">extension</span> <span class="token builtin">LoginPresenter</span><span class="token punctuation">:</span> <span class="token builtin">LoginPresenterProtocol</span> <span class="token punctuation">{</span>
 
-    func login() {
-        model?.login(account: view?.account(), pwd: view?.password())
-    }
+    <span class="token keyword">func</span> <span class="token function">login</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        model<span class="token operator">?</span><span class="token punctuation">.</span><span class="token function">login</span><span class="token punctuation">(</span>account<span class="token punctuation">:</span> view<span class="token operator">?</span><span class="token punctuation">.</span><span class="token function">account</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> pwd<span class="token punctuation">:</span> view<span class="token operator">?</span><span class="token punctuation">.</span><span class="token function">password</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+    <span class="token punctuation">}</span>
 
-    func loading() {
-        view?.showLoading()
-    }
+    <span class="token keyword">func</span> <span class="token function">loading</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        view<span class="token operator">?</span><span class="token punctuation">.</span><span class="token function">showLoading</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+    <span class="token punctuation">}</span>
 
-    func loginSuccess(_ response: User) {
-        view?.loginSuccess(response)
-    }
+    <span class="token keyword">func</span> <span class="token function">loginSuccess</span><span class="token punctuation">(</span><span class="token number">_</span> response<span class="token punctuation">:</span> <span class="token builtin">User</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        view<span class="token operator">?</span><span class="token punctuation">.</span><span class="token function">loginSuccess</span><span class="token punctuation">(</span>response<span class="token punctuation">)</span>
+    <span class="token punctuation">}</span>
 
-    func loginFailure(_ error: String) {
-        view?.loginFailure(error)
-    }
+    <span class="token keyword">func</span> <span class="token function">loginFailure</span><span class="token punctuation">(</span><span class="token number">_</span> error<span class="token punctuation">:</span> <span class="token builtin">String</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        view<span class="token operator">?</span><span class="token punctuation">.</span><span class="token function">loginFailure</span><span class="token punctuation">(</span>error<span class="token punctuation">)</span>
+    <span class="token punctuation">}</span>
 
-    func showToast(_ text: String) {
-        view?.showToast(text)
-    }
-}
+    <span class="token keyword">func</span> <span class="token function">showToast</span><span class="token punctuation">(</span><span class="token number">_</span> text<span class="token punctuation">:</span> <span class="token builtin">String</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        view<span class="token operator">?</span><span class="token punctuation">.</span><span class="token function">showToast</span><span class="token punctuation">(</span>text<span class="token punctuation">)</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
 </code></pre>
 <p>可以看到，我们在 <code>LoginPresenter</code> 的构造方法中，同时实例化了Model 和 View，这样 Presenter 中就同时包含了两者。在 Presenter 的具体实现中，业务相关的操作由 Model 去完成（例如 Login），视图相关的操作由 View 去完成（例如获取用户输入内容等）。Presenter 只作为一个桥梁，巧妙的将 View 和 Model 的具体实现连接了起来。</p>
 <h2 id="View"><a href="#View" class="headerlink" title="View"></a>View</h2><p>最后再看一下 View 的具体实现，也就是 Controller 的实现：</p>
-<pre class=" language-Java"><code class="language-Java">class LoginViewController: UIViewController {
+<pre class=" language-swift"><code class="language-swift"><span class="token keyword">class</span> <span class="token class-name">LoginViewController</span><span class="token punctuation">:</span> <span class="token builtin">UIViewController</span> <span class="token punctuation">{</span>
 
-    private var present: LoginPresenter?
+    <span class="token keyword">private</span> <span class="token keyword">var</span> present<span class="token punctuation">:</span> <span class="token builtin">LoginPresenter</span><span class="token operator">?</span>
 
-    // MARK: - IBOutlet
-    @IBOutlet private weak var accountTF: UITextField!
-    @IBOutlet private weak var pwdTF: UITextField!
+    <span class="token comment" spellcheck="true">// MARK: - IBOutlet</span>
+    <span class="token atrule">@IBOutlet</span> <span class="token keyword">private</span> <span class="token keyword">weak</span> <span class="token keyword">var</span> accountTF<span class="token punctuation">:</span> <span class="token builtin">UITextField</span><span class="token operator">!</span>
+    <span class="token atrule">@IBOutlet</span> <span class="token keyword">private</span> <span class="token keyword">weak</span> <span class="token keyword">var</span> pwdTF<span class="token punctuation">:</span> <span class="token builtin">UITextField</span><span class="token operator">!</span>
 
-    // MARK: - LifeCycle
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        present = LoginPresenter(view: self)
-    }
+    <span class="token comment" spellcheck="true">// MARK: - LifeCycle</span>
+    <span class="token keyword">override</span> <span class="token keyword">func</span> <span class="token function">viewDidLoad</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">super</span><span class="token punctuation">.</span><span class="token function">viewDidLoad</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+        present <span class="token operator">=</span> <span class="token function">LoginPresenter</span><span class="token punctuation">(</span>view<span class="token punctuation">:</span> <span class="token keyword">self</span><span class="token punctuation">)</span>
+    <span class="token punctuation">}</span>
 
-    deinit {
+    <span class="token keyword">deinit</span> <span class="token punctuation">{</span>
 
-        present?.detachView()
-        print("销毁----------")
-    }
+        present<span class="token operator">?</span><span class="token punctuation">.</span><span class="token function">detachView</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+        <span class="token function">print</span><span class="token punctuation">(</span><span class="token string">"销毁----------"</span><span class="token punctuation">)</span>
+    <span class="token punctuation">}</span>
 
-    // MARK: - 点击登录
-    @IBAction func loginBtnDidClick() {
-        present?.login()
-    }
-}
+    <span class="token comment" spellcheck="true">// MARK: - 点击登录</span>
+    <span class="token atrule">@IBAction</span> <span class="token keyword">func</span> <span class="token function">loginBtnDidClick</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        present<span class="token operator">?</span><span class="token punctuation">.</span><span class="token function">login</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
 </code></pre>
-<pre><code>// MARK: - LoginViewProtocol
-extension LoginViewController: LoginViewProtocol {
+<pre class=" language-swift"><code class="language-swift"><span class="token comment" spellcheck="true">// MARK: - LoginViewProtocol</span>
+<span class="token keyword">extension</span> <span class="token builtin">LoginViewController</span><span class="token punctuation">:</span> <span class="token builtin">LoginViewProtocol</span> <span class="token punctuation">{</span>
 
-    func account() -&gt; String {
-        return accountTF.text ?? &quot;&quot;
-    }
+    <span class="token keyword">func</span> <span class="token function">account</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">-</span><span class="token operator">></span> <span class="token builtin">String</span> <span class="token punctuation">{</span>
+        <span class="token keyword">return</span> accountTF<span class="token punctuation">.</span>text <span class="token operator">?</span><span class="token operator">?</span> <span class="token string">""</span>
+    <span class="token punctuation">}</span>
 
-    func password() -&gt; String {
-        return pwdTF.text ?? &quot;&quot;
-    }
+    <span class="token keyword">func</span> <span class="token function">password</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">-</span><span class="token operator">></span> <span class="token builtin">String</span> <span class="token punctuation">{</span>
+        <span class="token keyword">return</span> pwdTF<span class="token punctuation">.</span>text <span class="token operator">?</span><span class="token operator">?</span> <span class="token string">""</span>
+    <span class="token punctuation">}</span>
 
-    func showLoading() {
-        Toast.loading()
-    }
+    <span class="token keyword">func</span> <span class="token function">showLoading</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token builtin">Toast</span><span class="token punctuation">.</span><span class="token function">loading</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+    <span class="token punctuation">}</span>
 
-    func showToast(_ text: String) {
-        Toast.show(info: text)
-    }
+    <span class="token keyword">func</span> <span class="token function">showToast</span><span class="token punctuation">(</span><span class="token number">_</span> text<span class="token punctuation">:</span> <span class="token builtin">String</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token builtin">Toast</span><span class="token punctuation">.</span><span class="token function">show</span><span class="token punctuation">(</span>info<span class="token punctuation">:</span> text<span class="token punctuation">)</span>
+    <span class="token punctuation">}</span>
 
-    func loginSuccess(_ response: User) {
+    <span class="token keyword">func</span> <span class="token function">loginSuccess</span><span class="token punctuation">(</span><span class="token number">_</span> response<span class="token punctuation">:</span> <span class="token builtin">User</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
 
-        Toast.show(info: &quot;&quot;
-        \(response.name) \n
+        <span class="token builtin">Toast</span><span class="token punctuation">.</span><span class="token function">show</span><span class="token punctuation">(</span>info<span class="token punctuation">:</span> <span class="token string">""</span>
+        \<span class="token punctuation">(</span>response<span class="token punctuation">.</span>name<span class="token punctuation">)</span> \n
         登录成功
-        &quot;&quot;)
-        dismiss(animated: true, completion: nil)
-    }
+        <span class="token string">""</span><span class="token punctuation">)</span>
+        <span class="token function">dismiss</span><span class="token punctuation">(</span>animated<span class="token punctuation">:</span> <span class="token boolean">true</span><span class="token punctuation">,</span> completion<span class="token punctuation">:</span> <span class="token constant">nil</span><span class="token punctuation">)</span>
+    <span class="token punctuation">}</span>
 
-    func loginFailure(_ error: String) {
-        Toast.show(info: error)
-    }
-}
-</code></pre><p>至此，我们就通过 MVP 实现了之前所设想的业务逻辑和 UI 变换分离的 C 层。</p>
+    <span class="token keyword">func</span> <span class="token function">loginFailure</span><span class="token punctuation">(</span><span class="token number">_</span> error<span class="token punctuation">:</span> <span class="token builtin">String</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token builtin">Toast</span><span class="token punctuation">.</span><span class="token function">show</span><span class="token punctuation">(</span>info<span class="token punctuation">:</span> error<span class="token punctuation">)</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+</code></pre>
+<p>至此，我们就通过 MVP 实现了之前所设想的业务逻辑和 UI 变换分离的 C 层。</p>
 <ul>
 <li>Button 的 点击负责发起登录任务，但又不负责具体实现，而是由Presenter 转接给 Model 去实现</li>
 <li>Controller 什么时候显示 Toast，什么时候跳转界面直接由 Presenter 告诉他，他只做一个 View 该做的事情</li>
