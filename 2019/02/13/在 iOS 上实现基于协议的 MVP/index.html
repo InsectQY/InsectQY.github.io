@@ -26,7 +26,7 @@
     <link rel="stylesheet" type="text/css" href="/css/my.css">
 
     <script src="/libs/jquery/jquery-2.2.0.min.js"></script>
-<link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css"></head>
+<link rel="stylesheet" href="/css/prism-hopscotch.css" type="text/css"></head>
 
 
 <body>
@@ -367,32 +367,31 @@
     <span class="token comment" spellcheck="true">/// 年龄</span>
     <span class="token keyword">let</span> age<span class="token punctuation">:</span> <span class="token builtin">Int</span>
 <span class="token punctuation">}</span>
-``` swift
-其次还需要一个 业务方法 <span class="token builtin">Login</span>
 </code></pre>
-<p>protocol LoginModelProtocol: class {</p>
-<pre><code>/// 登录逻辑处理
-func login(account: String, pwd: String)
-</code></pre><p>}</p>
-<pre><code>## View - Protocol
+<p>其次还需要一个 业务方法 Login</p>
+<pre class=" language-swift"><code class="language-swift">protocol <span class="token builtin">LoginModelProtocol</span><span class="token punctuation">:</span> <span class="token keyword">class</span> <span class="token punctuation">{</span>
 
-``` swift
-protocol LoginViewProtocol: class {
+    <span class="token comment" spellcheck="true">/// 登录逻辑处理</span>
+    <span class="token keyword">func</span> <span class="token function">login</span><span class="token punctuation">(</span>account<span class="token punctuation">:</span> <span class="token builtin">String</span><span class="token punctuation">,</span> pwd<span class="token punctuation">:</span> <span class="token builtin">String</span><span class="token punctuation">)</span>
+<span class="token punctuation">}</span>
+</code></pre>
+<h2 id="View-Protocol"><a href="#View-Protocol" class="headerlink" title="View - Protocol"></a>View - Protocol</h2><pre class=" language-swift"><code class="language-swift">protocol <span class="token builtin">LoginViewProtocol</span><span class="token punctuation">:</span> <span class="token keyword">class</span> <span class="token punctuation">{</span>
 
-    /// 账号
-    func account() -&gt; String
-    /// 密码
-    func password() -&gt; String
-    /// 输入不合法
-    func showToast(_ text: String)
-    /// 请求正在进行中
-    func showLoading()
-    /// 网络请求返回, 登录成功
-    func loginSuccess(_ response: User)
-    /// 网络请求返回, 登录失败
-    func loginFailure(_ error: String)
-}
-</code></pre><p>对于View的接口，去观察功能上的操作，然后考虑：</p>
+    <span class="token comment" spellcheck="true">/// 账号</span>
+    <span class="token keyword">func</span> <span class="token function">account</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">-</span><span class="token operator">></span> <span class="token builtin">String</span>
+    <span class="token comment" spellcheck="true">/// 密码</span>
+    <span class="token keyword">func</span> <span class="token function">password</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">-</span><span class="token operator">></span> <span class="token builtin">String</span>
+    <span class="token comment" spellcheck="true">/// 输入不合法</span>
+    <span class="token keyword">func</span> <span class="token function">showToast</span><span class="token punctuation">(</span><span class="token number">_</span> text<span class="token punctuation">:</span> <span class="token builtin">String</span><span class="token punctuation">)</span>
+    <span class="token comment" spellcheck="true">/// 请求正在进行中</span>
+    <span class="token keyword">func</span> <span class="token function">showLoading</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+    <span class="token comment" spellcheck="true">/// 网络请求返回, 登录成功</span>
+    <span class="token keyword">func</span> <span class="token function">loginSuccess</span><span class="token punctuation">(</span><span class="token number">_</span> response<span class="token punctuation">:</span> <span class="token builtin">User</span><span class="token punctuation">)</span>
+    <span class="token comment" spellcheck="true">/// 网络请求返回, 登录失败</span>
+    <span class="token keyword">func</span> <span class="token function">loginFailure</span><span class="token punctuation">(</span><span class="token number">_</span> error<span class="token punctuation">:</span> <span class="token builtin">String</span><span class="token punctuation">)</span>
+<span class="token punctuation">}</span>
+</code></pre>
+<p>对于View的接口，去观察功能上的操作，然后考虑：</p>
 <ul>
 <li>该操作需要什么？（account, password）</li>
 <li>该操作的结果，对应的反馈？(showToast, loginSuccess, loginFailure)</li>
