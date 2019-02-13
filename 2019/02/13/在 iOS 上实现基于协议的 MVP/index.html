@@ -26,7 +26,7 @@
     <link rel="stylesheet" type="text/css" href="/css/my.css">
 
     <script src="/libs/jquery/jquery-2.2.0.min.js"></script>
-</head>
+<link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css"></head>
 
 
 <body>
@@ -341,11 +341,11 @@
 <li>本地模拟网络请求，随机返回用户登录成功或是失败。登录成功时，返回首页并显示用户名。登录失败时，显示 Error 的信息。<br><img src="https://upload-images.jianshu.io/upload_images/2568859-cdb3052db5c2bf25.gif?imageMogr2/auto-orient/strip" alt="运行效果"></li>
 </ol>
 <p>试想一下在传统的 MVC 中我们会如何处理，C 持有两个 <code>UITextField</code>。</p>
-<pre><code class="Swift"> @IBOutlet private weak var accountTF: UITextField!
+<pre class=" language-Swift"><code class="language-Swift"> @IBOutlet private weak var accountTF: UITextField!
  @IBOutlet private weak var pwdTF: UITextField!
 </code></pre>
 <p>并添加按钮点击事件</p>
-<pre><code class="Swift">// MARK: - 点击登录
+<pre class=" language-Swift"><code class="language-Swift">// MARK: - 点击登录
  @IBAction func loginBtnDidClick() {
 
  }
@@ -360,7 +360,7 @@
 </ul>
 <p>完工以后，我们的目录是这样的，接下来开始一步步编写思路。<br><img src="https://upload-images.jianshu.io/upload_images/2568859-44d994cda7d71414.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="目录"></p>
 <h1 id="定义-Model，View，Presenter-的-Protocol"><a href="#定义-Model，View，Presenter-的-Protocol" class="headerlink" title="定义 Model，View，Presenter 的 Protocol"></a>定义 Model，View，Presenter 的 Protocol</h1><h2 id="Model-Protocol"><a href="#Model-Protocol" class="headerlink" title="Model - Protocol"></a>Model - Protocol</h2><p>首先登录返回的用户信息类肯定是必不可少的</p>
-<pre><code class="Swift">struct User: Codable {
+<pre class=" language-Swift"><code class="language-Swift">struct User: Codable {
 
     /// 姓名
     let name: String
@@ -369,18 +369,18 @@
 }
 </code></pre>
 <p>其次还需要一个 业务方法 Login</p>
-<pre><code class="Swift">protocol LoginModelProtocol: class {
+<pre class=" language-Swift"><code class="language-Swift">protocol LoginModelProtocol: class {
 
     /// 登录逻辑处理
     func login(account: String, pwd: String)
 }
 </code></pre>
-<h2 id="View-Protocol"><a href="#View-Protocol" class="headerlink" title="View - Protocol"></a>View - Protocol</h2><pre><code class="Swift">protocol LoginViewProtocol: class {
+<h2 id="View-Protocol"><a href="#View-Protocol" class="headerlink" title="View - Protocol"></a>View - Protocol</h2><pre class=" language-Swift"><code class="language-Swift">protocol LoginViewProtocol: class {
 
     /// 账号
-    func account() -&gt; String
+    func account() -> String
     /// 密码
-    func password() -&gt; String
+    func password() -> String
     /// 输入不合法
     func showToast(_ text: String)
     /// 请求正在进行中
@@ -406,7 +406,7 @@
 <li style="list-style: none"><input type="checkbox"> 网络请求失败回调</li>
 </ul>
 <p>因此，Presenter 就可以这么定义：</p>
-<pre><code class="Swift">protocol LoginPresenterProtocol: class {
+<pre class=" language-Swift"><code class="language-Swift">protocol LoginPresenterProtocol: class {
 
     /// 登录
     func login()
@@ -421,7 +421,7 @@
 }
 </code></pre>
 <h1 id="Model，View，Presenter-的具体实现"><a href="#Model，View，Presenter-的具体实现" class="headerlink" title="Model，View，Presenter 的具体实现"></a>Model，View，Presenter 的具体实现</h1><h2 id="Model"><a href="#Model" class="headerlink" title="Model"></a>Model</h2><p>还记得我们刚刚所说的，在 MVP 中，Model 的工作就是完成具体的业务和逻辑操作。比如说网络请求，持久化数据增删改查等。同时Model中又不会包含任何View。</p>
-<pre><code class="Swift">class LoginModel {
+<pre class=" language-Swift"><code class="language-Swift">class LoginModel {
 
     weak var present: LoginPresenter?
 
@@ -437,12 +437,12 @@ extension LoginModel: LoginModelProtocol {
 
         guard let account = account, let pwd = pwd else {
 
-            present?.showToast(&quot;账号密码不合法&quot;) 
+            present?.showToast("账号密码不合法") 
             return
         }
         if account.count == 0 || pwd.count == 0 {
 
-            present?.showToast(&quot;账号密码不合法&quot;)
+            present?.showToast("账号密码不合法")
             return
         }
 
@@ -455,7 +455,7 @@ extension LoginModel: LoginModelProtocol {
     }
 }
 </code></pre>
-<h2 id="Presenter"><a href="#Presenter" class="headerlink" title="Presenter"></a>Presenter</h2><pre><code class="Swift">class LoginPresenter {
+<h2 id="Presenter"><a href="#Presenter" class="headerlink" title="Presenter"></a>Presenter</h2><pre class=" language-Swift"><code class="language-Swift">class LoginPresenter {
 
     var model: LoginModelProtocol?
     weak var view: LoginViewProtocol?
@@ -493,7 +493,7 @@ extension LoginPresenter: LoginPresenterProtocol {
 </code></pre>
 <p>可以看到，我们在 <code>LoginPresenter</code> 的构造方法中，同时实例化了Model 和 View，这样 Presenter 中就同时包含了两者。在 Presenter 的具体实现中，业务相关的操作由 Model 去完成（例如 Login），视图相关的操作由 View 去完成（例如获取用户输入内容等）。Presenter 只作为一个桥梁，巧妙的将 View 和 Model 的具体实现连接了起来。</p>
 <h2 id="View"><a href="#View" class="headerlink" title="View"></a>View</h2><p>最后再看一下 View 的具体实现，也就是 Controller 的实现：</p>
-<pre><code class="Swift">class LoginViewController: UIViewController {
+<pre class=" language-Swift"><code class="language-Swift">class LoginViewController: UIViewController {
 
     private var present: LoginPresenter?
 
@@ -510,7 +510,7 @@ extension LoginPresenter: LoginPresenterProtocol {
     deinit {
 
         present?.detachView()
-        print(&quot;销毁----------&quot;)
+        print("销毁----------")
     }
 
     // MARK: - 点击登录
@@ -519,38 +519,38 @@ extension LoginPresenter: LoginPresenterProtocol {
     }
 }
 </code></pre>
-<pre><code class="swift">// MARK: - LoginViewProtocol
-extension LoginViewController: LoginViewProtocol {
+<pre class=" language-swift"><code class="language-swift"><span class="token comment" spellcheck="true">// MARK: - LoginViewProtocol</span>
+<span class="token keyword">extension</span> <span class="token builtin">LoginViewController</span><span class="token punctuation">:</span> <span class="token builtin">LoginViewProtocol</span> <span class="token punctuation">{</span>
 
-    func account() -&gt; String {
-        return accountTF.text ?? &quot;&quot;
-    }
+    <span class="token keyword">func</span> <span class="token function">account</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">-</span><span class="token operator">></span> <span class="token builtin">String</span> <span class="token punctuation">{</span>
+        <span class="token keyword">return</span> accountTF<span class="token punctuation">.</span>text <span class="token operator">?</span><span class="token operator">?</span> <span class="token string">""</span>
+    <span class="token punctuation">}</span>
 
-    func password() -&gt; String {
-        return pwdTF.text ?? &quot;&quot;
-    }
+    <span class="token keyword">func</span> <span class="token function">password</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">-</span><span class="token operator">></span> <span class="token builtin">String</span> <span class="token punctuation">{</span>
+        <span class="token keyword">return</span> pwdTF<span class="token punctuation">.</span>text <span class="token operator">?</span><span class="token operator">?</span> <span class="token string">""</span>
+    <span class="token punctuation">}</span>
 
-    func showLoading() {
-        Toast.loading()
-    }
+    <span class="token keyword">func</span> <span class="token function">showLoading</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token builtin">Toast</span><span class="token punctuation">.</span><span class="token function">loading</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+    <span class="token punctuation">}</span>
 
-    func showToast(_ text: String) {
-        Toast.show(info: text)
-    }
+    <span class="token keyword">func</span> <span class="token function">showToast</span><span class="token punctuation">(</span><span class="token number">_</span> text<span class="token punctuation">:</span> <span class="token builtin">String</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token builtin">Toast</span><span class="token punctuation">.</span><span class="token function">show</span><span class="token punctuation">(</span>info<span class="token punctuation">:</span> text<span class="token punctuation">)</span>
+    <span class="token punctuation">}</span>
 
-    func loginSuccess(_ response: User) {
+    <span class="token keyword">func</span> <span class="token function">loginSuccess</span><span class="token punctuation">(</span><span class="token number">_</span> response<span class="token punctuation">:</span> <span class="token builtin">User</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
 
-        Toast.show(info: &quot;&quot;
-        \(response.name) \n
+        <span class="token builtin">Toast</span><span class="token punctuation">.</span><span class="token function">show</span><span class="token punctuation">(</span>info<span class="token punctuation">:</span> <span class="token string">""</span>
+        \<span class="token punctuation">(</span>response<span class="token punctuation">.</span>name<span class="token punctuation">)</span> \n
         登录成功
-        &quot;&quot;)
-        dismiss(animated: true, completion: nil)
-    }
+        <span class="token string">""</span><span class="token punctuation">)</span>
+        <span class="token function">dismiss</span><span class="token punctuation">(</span>animated<span class="token punctuation">:</span> <span class="token boolean">true</span><span class="token punctuation">,</span> completion<span class="token punctuation">:</span> <span class="token constant">nil</span><span class="token punctuation">)</span>
+    <span class="token punctuation">}</span>
 
-    func loginFailure(_ error: String) {
-        Toast.show(info: error)
-    }
-}
+    <span class="token keyword">func</span> <span class="token function">loginFailure</span><span class="token punctuation">(</span><span class="token number">_</span> error<span class="token punctuation">:</span> <span class="token builtin">String</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token builtin">Toast</span><span class="token punctuation">.</span><span class="token function">show</span><span class="token punctuation">(</span>info<span class="token punctuation">:</span> error<span class="token punctuation">)</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
 </code></pre>
 <p>至此，我们就通过 MVP 实现了之前所设想的业务逻辑和 UI 变换分离的 C 层。</p>
 <ul>
