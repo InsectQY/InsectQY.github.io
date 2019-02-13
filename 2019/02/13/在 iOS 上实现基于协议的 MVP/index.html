@@ -360,27 +360,25 @@
 </ul>
 <p>完工以后，我们的目录是这样的，接下来开始一步步编写思路。<br><img src="https://upload-images.jianshu.io/upload_images/2568859-44d994cda7d71414.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="目录"></p>
 <h1 id="定义-Model，View，Presenter-的-Protocol"><a href="#定义-Model，View，Presenter-的-Protocol" class="headerlink" title="定义 Model，View，Presenter 的 Protocol"></a>定义 Model，View，Presenter 的 Protocol</h1><h2 id="Model-Protocol"><a href="#Model-Protocol" class="headerlink" title="Model - Protocol"></a>Model - Protocol</h2><p>首先登录返回的用户信息类肯定是必不可少的</p>
-<pre class=" language-Java"><code class="language-Java">struct User: Codable {
+<pre><code>struct User: Codable {
 
     /// 姓名
     let name: String
     /// 年龄
     let age: Int
 }
-</code></pre>
-<p>其次还需要一个 业务方法 Login</p>
-<pre class=" language-Java"><code class="language-Java">protocol LoginModelProtocol: class {
+</code></pre><p>其次还需要一个 业务方法 Login</p>
+<pre><code>protocol LoginModelProtocol: class {
 
     /// 登录逻辑处理
     func login(account: String, pwd: String)
 }
-</code></pre>
-<h2 id="View-Protocol"><a href="#View-Protocol" class="headerlink" title="View - Protocol"></a>View - Protocol</h2><pre class=" language-Java"><code class="language-Java">protocol LoginViewProtocol: class {
+</code></pre><h2 id="View-Protocol"><a href="#View-Protocol" class="headerlink" title="View - Protocol"></a>View - Protocol</h2><pre><code>protocol LoginViewProtocol: class {
 
     /// 账号
-    func account() -> String
+    func account() -&gt; String
     /// 密码
-    func password() -> String
+    func password() -&gt; String
     /// 输入不合法
     func showToast(_ text: String)
     /// 请求正在进行中
@@ -390,8 +388,7 @@
     /// 网络请求返回, 登录失败
     func loginFailure(_ error: String)
 }
-</code></pre>
-<p>对于View的接口，去观察功能上的操作，然后考虑：</p>
+</code></pre><p>对于View的接口，去观察功能上的操作，然后考虑：</p>
 <ul>
 <li>该操作需要什么？（account, password）</li>
 <li>该操作的结果，对应的反馈？(showToast, loginSuccess, loginFailure)</li>
@@ -519,15 +516,15 @@ extension LoginPresenter: LoginPresenterProtocol {
     }
 }
 </code></pre>
-<pre class=" language-Java"><code class="language-Java">// MARK: - LoginViewProtocol
+<pre><code>// MARK: - LoginViewProtocol
 extension LoginViewController: LoginViewProtocol {
 
-    func account() -> String {
-        return accountTF.text ?? ""
+    func account() -&gt; String {
+        return accountTF.text ?? &quot;&quot;
     }
 
-    func password() -> String {
-        return pwdTF.text ?? ""
+    func password() -&gt; String {
+        return pwdTF.text ?? &quot;&quot;
     }
 
     func showLoading() {
@@ -540,10 +537,10 @@ extension LoginViewController: LoginViewProtocol {
 
     func loginSuccess(_ response: User) {
 
-        Toast.show(info: ""
+        Toast.show(info: &quot;&quot;
         \(response.name) \n
         登录成功
-        "")
+        &quot;&quot;)
         dismiss(animated: true, completion: nil)
     }
 
@@ -551,8 +548,7 @@ extension LoginViewController: LoginViewProtocol {
         Toast.show(info: error)
     }
 }
-</code></pre>
-<p>至此，我们就通过 MVP 实现了之前所设想的业务逻辑和 UI 变换分离的 C 层。</p>
+</code></pre><p>至此，我们就通过 MVP 实现了之前所设想的业务逻辑和 UI 变换分离的 C 层。</p>
 <ul>
 <li>Button 的 点击负责发起登录任务，但又不负责具体实现，而是由Presenter 转接给 Model 去实现</li>
 <li>Controller 什么时候显示 Toast，什么时候跳转界面直接由 Presenter 告诉他，他只做一个 View 该做的事情</li>
