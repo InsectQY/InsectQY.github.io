@@ -453,7 +453,7 @@ provider<span class="token punctuation">.</span><span class="token function">req
 </code></pre>
 <p>当然最好我们还是在原生方法上再封装一层，减少原生方法对项目的侵入性。</p>
 <p>需要注意的是，在我们平时使用 <code>Codable</code> 协议时，通常都要分清解析的是数组还是字典。如果是数组类型数据的话，必须得调用指定解析数组的方法，否则无法正确解析。</p>
-<p>但 <a href="https://github.com/Moya/Moya" target="_blank" rel="noopener">Moya</a> 是可以在外界直接传入数组类型的，具体实现也非常简单。用一个 <code>Struct</code> 的结构体去包装每次需要解析的对象，再把解析对象指定为包装好的结构体。</p>
+<p>但 <a href="https://github.com/Moya/Moya" target="_blank" rel="noopener">Moya</a> 是可以在外界直接传入数组类型的，具体实现也非常简单，用一个 <code>Struct</code> 的结构体去包装每次需要解析的对象，再把解析对象指定为包装好的结构体。</p>
 <pre class=" language-swift"><code class="language-swift"><span class="token keyword">private</span> <span class="token keyword">struct</span> <span class="token builtin">DecodableWrapper</span><span class="token punctuation">:</span> <span class="token builtin">Decodable</span> <span class="token punctuation">{</span>
     <span class="token keyword">let</span> value<span class="token punctuation">:</span> T
 <span class="token punctuation">}</span>
@@ -464,27 +464,25 @@ provider<span class="token punctuation">.</span><span class="token function">req
 <li>在 <strong>Objective-C</strong> 中我们使用 <a href="https://github.com/CoderMJLee/MJExtension" target="_blank" rel="noopener">MJExtension</a> / <a href="https://github.com/ibireme/YYModel" target="_blank" rel="noopener">YYModel</a>  这些库去解析 <strong>JSON</strong> 时，都要调用指定的解析方法(数组和字典的解析方法是不同的)，能否用以上的思路把解析数组和解析字典的方法整合成一个方法呢？</li>
 <li>如果要解析的模型中有个数组属性，数组里面又要装着其他模型。还要写指定数组内部类型的方法。</li>
 </ol>
-<ul>
-<li><p><a href="https://github.com/CoderMJLee/MJExtension" target="_blank" rel="noopener">MJExtension</a></p>
-<pre class=" language-objective-c"><code class="language-objective-c">// Tell MJExtension what type of model will be contained in statuses and ads.
-[StatusResult mj_setupObjectClassInArray:^NSDictionary *{
-  return @{
-             @"statuses" : @"Status",
-             // @"statuses" : [Status class],
-             @"ads" : @"Ad"
-             // @"ads" : [Ad class]
-         };
-}];
+<p><a href="https://github.com/CoderMJLee/MJExtension" target="_blank" rel="noopener">MJExtension</a></p>
+<pre class=" language-objectivec"><code class="language-objectivec"><span class="token comment" spellcheck="true">// Tell MJExtension what type of model will be contained in statuses and ads.</span>
+<span class="token punctuation">[</span>StatusResult mj_setupObjectClassInArray<span class="token punctuation">:</span><span class="token operator">^</span>NSDictionary <span class="token operator">*</span><span class="token punctuation">{</span>
+    <span class="token keyword">return</span> <span class="token operator">@</span><span class="token punctuation">{</span>
+               <span class="token string">@"statuses"</span> <span class="token punctuation">:</span> <span class="token string">@"Status"</span><span class="token punctuation">,</span>
+               <span class="token comment" spellcheck="true">// @"statuses" : [Status class],</span>
+               <span class="token string">@"ads"</span> <span class="token punctuation">:</span> <span class="token string">@"Ad"</span>
+               <span class="token comment" spellcheck="true">// @"ads" : [Ad class]</span>
+           <span class="token punctuation">}</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
 </code></pre>
-</li>
-<li><p><a href="https://github.com/ibireme/YYModel" target="_blank" rel="noopener">YYModel</a><br><code>`</code> objective-c</p>
-</li>
-</ul>
-<ul>
-<li>(NSDictionary *)modelContainerPropertyGenericClass {<br>  // value should be Class or Class name.<br>  return @{@”shadows” : [Shadow class],<pre><code>       @&quot;borders&quot; : Border.class,
-       @&quot;attachments&quot; : @&quot;Attachment&quot; };
-</code></pre>}<br><code>`</code></li>
-</ul>
+<p><a href="https://github.com/ibireme/YYModel" target="_blank" rel="noopener">YYModel</a></p>
+<pre class=" language-objectivec"><code class="language-objectivec"><span class="token comment" spellcheck="true">// value should be Class or Class name.</span>
+<span class="token operator">+</span> <span class="token punctuation">(</span>NSDictionary <span class="token operator">*</span><span class="token punctuation">)</span>modelContainerPropertyGenericClass <span class="token punctuation">{</span>
+    <span class="token keyword">return</span> <span class="token operator">@</span><span class="token punctuation">{</span><span class="token string">@"shadows"</span> <span class="token punctuation">:</span> <span class="token punctuation">[</span>Shadow class<span class="token punctuation">]</span><span class="token punctuation">,</span>
+             <span class="token string">@"borders"</span> <span class="token punctuation">:</span> Border<span class="token punctuation">.</span>class<span class="token punctuation">,</span>
+             <span class="token string">@"attachments"</span> <span class="token punctuation">:</span> <span class="token string">@"Attachment"</span> <span class="token punctuation">}</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+</code></pre>
 <p>这么写目的是为了在运行时拿到数组中元素的具体类型，再用 <code>Runtime</code> 去类中获取属性以及 <code>KVC</code> 赋值。如果用泛型指定数组里元素的具体类型的话，这些方法是否可以省略呢？</p>
 <p>然而很遗憾，原生的 <strong>Objective-C</strong> 是无法实现以上想法的。原因在于 <strong>Objective-C</strong> 的泛型只能算是”伪”泛型，仅仅是一个编译器特性，只能在编译时为 <strong>Xcode</strong> 提供具体类型，在运行时是没有的。</p>
 <h3 id="封装网络缓存"><a href="#封装网络缓存" class="headerlink" title="封装网络缓存"></a>封装网络缓存</h3><p>为了提升用户体验，在实际开发中，有一些内容可能会加载很慢，我们想先显示上次的内容，等加载成功后，再用最新的内容替换上次的内容。也有时候，由于网络处于断开状态，为了更加友好，我们想显示上次缓存中的内容。</p>
@@ -860,12 +858,12 @@ View Controller 向来是 MVC (Model-View-View Controller) 中最让人头疼的
                 
                 <div class="card-action article-tags">
                     
-                    <a href="/tags/RxSwift/" target="_blank">
-                        <span class="chip bg-color">RxSwift</span>
-                    </a>
-                    
                     <a href="/tags/Swift/" target="_blank">
                         <span class="chip bg-color">Swift</span>
+                    </a>
+                    
+                    <a href="/tags/RxSwift/" target="_blank">
+                        <span class="chip bg-color">RxSwift</span>
                     </a>
                     
                     <a href="/tags/Bindings/" target="_blank">
