@@ -465,24 +465,27 @@ provider<span class="token punctuation">.</span><span class="token function">req
 <li>如果要解析的模型中有个数组属性，数组里面又要装着其他模型。还要写指定数组内部类型的方法。</li>
 </ol>
 <ul>
-<li><a href="https://github.com/CoderMJLee/MJExtension" target="_blank" rel="noopener">MJExtension</a><pre class=" language-swift"><code class="language-swift"><span class="token comment" spellcheck="true">// Tell MJExtension what type of model will be contained in statuses and ads.</span>
-<span class="token punctuation">[</span><span class="token builtin">StatusResult</span> mj_setupObjectClassInArray<span class="token punctuation">:</span><span class="token operator">^</span><span class="token builtin">NSDictionary</span> <span class="token operator">*</span><span class="token punctuation">{</span>
-  <span class="token keyword">return</span> @<span class="token punctuation">{</span>
-             @<span class="token string">"statuses"</span> <span class="token punctuation">:</span> @<span class="token string">"Status"</span><span class="token punctuation">,</span>
-             <span class="token comment" spellcheck="true">// @"statuses" : [Status class],</span>
-             @<span class="token string">"ads"</span> <span class="token punctuation">:</span> @<span class="token string">"Ad"</span>
-             <span class="token comment" spellcheck="true">// @"ads" : [Ad class]</span>
-         <span class="token punctuation">}</span><span class="token punctuation">;</span>
-<span class="token punctuation">}</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+<li><p><a href="https://github.com/CoderMJLee/MJExtension" target="_blank" rel="noopener">MJExtension</a></p>
+<pre class=" language-objective-c"><code class="language-objective-c">// Tell MJExtension what type of model will be contained in statuses and ads.
+[StatusResult mj_setupObjectClassInArray:^NSDictionary *{
+  return @{
+             @"statuses" : @"Status",
+             // @"statuses" : [Status class],
+             @"ads" : @"Ad"
+             // @"ads" : [Ad class]
+         };
+}];
 </code></pre>
 </li>
-<li><a href="https://github.com/ibireme/YYModel" target="_blank" rel="noopener">YYModel</a><br><code>`</code> swift</li>
+<li><p><a href="https://github.com/ibireme/YYModel" target="_blank" rel="noopener">YYModel</a><br><code>`</code> objective-c</p>
+</li>
 </ul>
 <ul>
 <li>(NSDictionary *)modelContainerPropertyGenericClass {<br>  // value should be Class or Class name.<br>  return @{@”shadows” : [Shadow class],<pre><code>       @&quot;borders&quot; : Border.class,
        @&quot;attachments&quot; : @&quot;Attachment&quot; };
-</code></pre>}<br><code>这么写目的是为了在运行时拿到数组中元素的具体类型，再用</code>Runtime<code>去类中获取属性以及</code>KVC<code>`</code> 赋值。如果用泛型指定数组里元素的具体类型的话，这些方法是否可以省略呢？</li>
+</code></pre>}<br><code>`</code></li>
 </ul>
+<p>这么写目的是为了在运行时拿到数组中元素的具体类型，再用 <code>Runtime</code> 去类中获取属性以及 <code>KVC</code> 赋值。如果用泛型指定数组里元素的具体类型的话，这些方法是否可以省略呢？</p>
 <p>然而很遗憾，原生的 <strong>Objective-C</strong> 是无法实现以上想法的。原因在于 <strong>Objective-C</strong> 的泛型只能算是”伪”泛型，仅仅是一个编译器特性，只能在编译时为 <strong>Xcode</strong> 提供具体类型，在运行时是没有的。</p>
 <h3 id="封装网络缓存"><a href="#封装网络缓存" class="headerlink" title="封装网络缓存"></a>封装网络缓存</h3><p>为了提升用户体验，在实际开发中，有一些内容可能会加载很慢，我们想先显示上次的内容，等加载成功后，再用最新的内容替换上次的内容。也有时候，由于网络处于断开状态，为了更加友好，我们想显示上次缓存中的内容。</p>
 <p>网络缓存我们基于 <a href="https://github.com/hyperoslo/Cache" target="_blank" rel="noopener">Cache</a> 来实现。首先创建一个 <code>CacheManager</code> 统一处理所有的读取和存储操作。我们把读取模型数据和读取网络请求返回的 <code>Response</code> 数据分别创建不同的方法（这里只贴了模型的方法）。</p>
@@ -857,12 +860,12 @@ View Controller 向来是 MVC (Model-View-View Controller) 中最让人头疼的
                 
                 <div class="card-action article-tags">
                     
-                    <a href="/tags/Swift/" target="_blank">
-                        <span class="chip bg-color">Swift</span>
-                    </a>
-                    
                     <a href="/tags/RxSwift/" target="_blank">
                         <span class="chip bg-color">RxSwift</span>
+                    </a>
+                    
+                    <a href="/tags/Swift/" target="_blank">
+                        <span class="chip bg-color">Swift</span>
                     </a>
                     
                     <a href="/tags/Bindings/" target="_blank">
